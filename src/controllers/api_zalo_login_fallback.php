@@ -41,9 +41,13 @@ if (empty($username) || empty($password)) {
 try {
     $db = get_db_connection();
 
-    // Tìm kiếm theo mã học sinh (bảng hoc_sinh chứa tài khoản đăng nhập)
-    $stmt = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, ngay_sinh, mat_khau_hash, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan FROM hoc_sinh WHERE ma_hoc_sinh = ? LIMIT 1");
-    $stmt->execute([$username]);
+    // Tìm kiếm theo mã học sinh / CCCD / SĐT / Mã MOET trong bảng ho_so_hoc_sinh
+    $clean_u = preg_replace('/[^0-9a-zA-Z]/', '', $username);
+    $stmt = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, ngay_sinh, mat_khau_hash, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan 
+                          FROM ho_so_hoc_sinh 
+                          WHERE ma_hoc_sinh = ? OR sdt = ? OR ma_moet = ? OR ma_hoc_sinh = ? 
+                          LIMIT 1");
+    $stmt->execute([$username, $username, $username, $clean_u]);
     $user = $stmt->fetch();
 
     $is_valid_password = false;
@@ -99,7 +103,7 @@ try {
 
         // Nếu đăng nhập thành công và có truyền zalo_id -> tự động liên kết
         if (!empty($zalo_id)) {
-            $update_stmt = $db->prepare("UPDATE hoc_sinh SET zalo_id = ? WHERE ma_hoc_sinh = ?");
+            $update_stmt = $db->prepare("UPDATE ho_so_hoc_sinh SET zalo_id = ? WHERE ma_hoc_sinh = ?");
             $update_stmt->execute([$zalo_id, $user['ma_hoc_sinh']]);
         }
 
