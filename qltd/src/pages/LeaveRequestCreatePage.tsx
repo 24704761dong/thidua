@@ -115,22 +115,22 @@ const LeaveRequestCreatePage: React.FC = () => {
         <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
           <Text className="font-semibold text-slate-800 mb-3 text-[15px]">Thời gian nghỉ</Text>
           <div className="grid grid-cols-2 gap-3">
-            <div>
+            <div className="min-w-0">
               <Text className="text-[13px] text-slate-500 mb-1">Từ ngày <span className="text-red-500">*</span></Text>
               <input
                 type="date"
                 value={tuNgay}
                 onChange={(e) => setTuNgay(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[14px] outline-none focus:border-blue-500 transition-colors"
+                className="w-full max-w-full box-border block appearance-none min-w-0 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[14px] outline-none focus:border-blue-500 transition-colors"
               />
             </div>
-            <div>
+            <div className="min-w-0">
               <Text className="text-[13px] text-slate-500 mb-1">Đến ngày <span className="text-red-500">*</span></Text>
               <input
                 type="date"
                 value={denNgay}
                 onChange={(e) => setDenNgay(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[14px] outline-none focus:border-blue-500 transition-colors"
+                className="w-full max-w-full box-border block appearance-none min-w-0 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[14px] outline-none focus:border-blue-500 transition-colors"
               />
             </div>
           </div>

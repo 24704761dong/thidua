@@ -324,13 +324,13 @@ const ViolationInputPage: React.FC = () => {
             </div>
           )}
 
-          <div>
+          <div className="w-full min-w-0">
             <label className="block text-[13px] font-semibold text-slate-700 mb-1">Ngày vi phạm</label>
             <input 
               type="date" 
               value={ngayViPham}
               onChange={(e) => setNgayViPham(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[14px] focus:outline-none focus:border-[#224397]"
+              className="w-full max-w-full box-border block bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[14px] focus:outline-none focus:border-[#224397] appearance-none min-w-0"
             />
           </div>
 
