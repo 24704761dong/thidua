@@ -41,14 +41,37 @@ if (empty($username) || empty($password)) {
 try {
     $db = get_db_connection();
 
-    // Tìm kiếm theo mã học sinh / CCCD / SĐT / Mã MOET trong bảng ho_so_hoc_sinh
+    // Tìm kiếm đa bảng: ho_so_hoc_sinh, hoc_sinh, users, giao_vien
     $clean_u = preg_replace('/[^0-9a-zA-Z]/', '', $username);
+    
+    // 1. Thử ho_so_hoc_sinh
     $stmt = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, ngay_sinh, mat_khau_hash, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan 
                           FROM ho_so_hoc_sinh 
                           WHERE ma_hoc_sinh = ? OR sdt = ? OR ma_moet = ? OR ma_hoc_sinh = ? 
                           LIMIT 1");
     $stmt->execute([$username, $username, $username, $clean_u]);
     $user = $stmt->fetch();
+
+    // 2. Thử hoc_sinh (VIEW)
+    if (!$user) {
+        $stmt_hs = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, ngay_sinh, mat_khau_hash, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan 
+                                  FROM hoc_sinh 
+                                  WHERE ma_hoc_sinh = ? OR sdt = ? OR ma_moet = ? OR ma_hoc_sinh = ? 
+                                  LIMIT 1");
+        $stmt_hs->execute([$username, $username, $username, $clean_u]);
+        $user = $stmt_hs->fetch();
+    }
+
+    // 3. Thử bảng users (Nếu là giáo viên / admin đăng nhập bằng SĐT / CCCD)
+    $user_admin = null;
+    if (!$user) {
+        $stmt_u = $db->prepare("SELECT id, ten_dang_nhap, ho_ten, sdt, mat_khau_hash, vai_tro, quyen_han 
+                                FROM users 
+                                WHERE ten_dang_nhap = ? OR sdt = ? 
+                                LIMIT 1");
+        $stmt_u->execute([$username, $username]);
+        $user_admin = $stmt_u->fetch();
+    }
 
     $is_valid_password = false;
 
@@ -93,6 +116,32 @@ try {
         }
     }
 
+    // Xử lý đăng nhập cho tài khoản Users (Admin / Giáo viên)
+    if ($user_admin && !empty($user_admin['mat_khau_hash']) && password_verify($password, $user_admin['mat_khau_hash'])) {
+        if (!empty($zalo_id)) {
+            $update_stmt = $db->prepare("UPDATE users SET zalo_id = ? WHERE id = ?");
+            $update_stmt->execute([$zalo_id, $user_admin['id']]);
+        }
+        $token = zalo_jwt_encode([
+            'student_id' => $user_admin['id'],
+            'ma_hoc_sinh' => $user_admin['ten_dang_nhap'],
+            'role' => $user_admin['vai_tro']
+        ]);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Đăng nhập thành công!',
+            'token' => $token,
+            'must_change_password' => false,
+            'user' => [
+                'id' => $user_admin['id'],
+                'name' => $user_admin['ho_ten'],
+                'must_change_password' => false,
+                'quyen_truy_cap' => json_decode($user_admin['quyen_han'] ?: '{}', true)
+            ]
+        ]);
+        exit();
+    }
+
     if ($user && $is_valid_password) {
         
         // Chặn học sinh đã nghỉ học
@@ -134,6 +183,7 @@ try {
         // DEBUG TẠM THỜI - Xóa sau khi fix xong
         $debug = [
             'user_found' => ($user !== false && $user !== null),
+            'admin_found' => ($user_admin !== false && $user_admin !== null),
             'username_sent' => $username,
             'is_valid_password' => $is_valid_password,
         ];
