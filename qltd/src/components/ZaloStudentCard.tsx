@@ -1,3 +1,4 @@
+import logoImg from '@/assets/logo.png';
 import React, { useState } from 'react';
 import QRCode from 'react-qr-code';
 
@@ -34,7 +35,7 @@ export const ZaloStudentCard: React.FC<ZaloStudentCardProps> = ({ studentData })
     return dob;
   };
 
-  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
+  const schoolLogo = logoImg;
   const avatarUrl = studentData?.avatar_url || studentData?.anh_the_url
     ? (studentData.avatar_url || studentData.anh_the_url)
     : (studentData?.anh_the

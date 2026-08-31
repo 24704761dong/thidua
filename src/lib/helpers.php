@@ -1697,7 +1697,7 @@ HTML;
  */
 function get_student_avatar_url($anh_the, $driver = 'local', $cloud_key = null) {
     if (empty($anh_the) && empty($cloud_key)) {
-        return '/thidua/public/assets/img/logoapp.png';
+        return '/thidua/public/assets/img/logo.png';
     }
 
     // 1. Nếu lưu trên Cloudflare R2 -> Lấy trực tiếp link Presigned URL từ R2
@@ -1727,7 +1727,7 @@ function get_student_avatar_url($anh_the, $driver = 'local', $cloud_key = null) 
         return '/thidua/public/assets/anh_the/' . ltrim($anh_the, '/');
     }
     
-    return '/thidua/public/assets/img/logoapp.png';
+    return '/thidua/public/assets/img/logo.png';
 }
 
 /**

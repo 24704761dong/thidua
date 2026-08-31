@@ -180,7 +180,7 @@ const HomePage: React.FC = () => {
 
 
   // Format tên, avatar
-  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
+  const schoolLogo = logoImg;
   const fullName = `${student.ho_dem || ''} ${student.ten || ''}`.trim();
   const serverAvatarUrl = student.avatar_url || student.anh_the_url
     ? (student.avatar_url || student.anh_the_url)

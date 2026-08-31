@@ -139,7 +139,7 @@ const SettingsPage: React.FC = () => {
   const studentName = displayData ? `${displayData.ho_dem || ''} ${displayData.ten || ''}`.trim() : 'Học sinh';
   const studentId = displayData?.ma_hoc_sinh || 'Chưa cập nhật';
 
-  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
+  const schoolLogo = logoImg;
   const serverAvatarUrl = displayData?.avatar_url || displayData?.anh_the_url
     ? (displayData.avatar_url || displayData.anh_the_url)
     : (displayData?.anh_the

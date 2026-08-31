@@ -42,7 +42,7 @@ if (!empty($url)) {
 
 // 2. Phục vụ ảnh thẻ hoặc logo trường từ local
 if ($type === 'logo') {
-    $logoPath = __DIR__ . '/../../public/assets/img/logoapp.png';
+    $logoPath = __DIR__ . '/../../public/assets/img/logo.png';
     if (file_exists($logoPath)) {
         header('Content-Type: image/png');
         header('Cache-Control: public, max-age=604800, immutable');
@@ -52,7 +52,7 @@ if ($type === 'logo') {
 }
 
 // 3. Fallback: Trả về logo trường
-$fallback = __DIR__ . '/../../public/assets/img/logoapp.png';
+$fallback = __DIR__ . '/../../public/assets/img/logo.png';
 if (file_exists($fallback)) {
     header('Content-Type: image/png');
     header('Cache-Control: public, max-age=86400');

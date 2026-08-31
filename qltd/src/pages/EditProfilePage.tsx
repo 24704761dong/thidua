@@ -183,7 +183,7 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
-  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
+  const schoolLogo = logoImg;
   const fullName = `${rawData?.ho_dem || ''} ${rawData?.ten || ''}`.trim() || 'Học sinh';
   const avatarUrl = avatarPreview 
     ? avatarPreview 
