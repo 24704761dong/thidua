@@ -375,15 +375,26 @@ ipcMain.on('do-login', async (event, { username, password }) => {
                     const parts = cookieStr.split(';');
                     const nameValue = parts[0].split('=');
                     if (nameValue.length >= 2) {
+                        const cookieName = nameValue[0].trim();
+                        const cookieVal = nameValue.slice(1).join('=');
                         await session.defaultSession.cookies.set({
-                            url: 'https://c3binhson.edu.vn/thidua/',
-                            name: nameValue[0].trim(),
-                            value: nameValue.slice(1).join('='),
+                            url: 'https://c3binhson.edu.vn',
+                            domain: '.c3binhson.edu.vn',
+                            name: cookieName,
+                            value: cookieVal,
                             path: '/',
                             secure: true,
-                            httpOnly: true,
-                            sameSite: 'lax'
-                        }).catch(e => console.error('Cookie set error:', e));
+                            httpOnly: false,
+                            sameSite: 'no_restriction'
+                        }).catch(e => console.error('Cookie set error 1:', e));
+                        
+                        await session.defaultSession.cookies.set({
+                            url: 'https://c3binhson.edu.vn/thidua/',
+                            name: cookieName,
+                            value: cookieVal,
+                            path: '/',
+                            secure: true
+                        }).catch(e => console.error('Cookie set error 2:', e));
                     }
                 }
             }
@@ -395,9 +406,11 @@ ipcMain.on('do-login', async (event, { username, password }) => {
         event.reply('login-response', data);
 
         if (data.success) {
-            if (mainWindow) {
-                mainWindow.loadURL('https://c3binhson.edu.vn/thidua/admin');
-            }
+            setTimeout(() => {
+                if (mainWindow) {
+                    mainWindow.loadURL('https://c3binhson.edu.vn/thidua/admin');
+                }
+            }, 300);
         }
     } catch (err) {
         console.error('Lỗi đăng nhập Desktop App:', err);
