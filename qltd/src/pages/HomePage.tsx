@@ -231,6 +231,7 @@ const HomePage: React.FC = () => {
                   <img 
                     src={serverAvatarUrl} 
                     alt="Avatar" 
+                    referrerPolicy="no-referrer"
                     className="w-full h-full rounded-full object-cover" 
                     onError={(e) => {
                       e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=224397&color=ffffff`;

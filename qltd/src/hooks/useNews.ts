@@ -20,7 +20,7 @@ export const useNews = (limit: number = 6) => {
         setLoading(true);
         setError(null);
         
-        // Call via Vite proxy to bypass CORS
+        // Call news API
         const response = await fetch(`https://c3binhson.edu.vn/api/news.php?type=news&limit=${limit}`);
         const data = await response.json();
         
@@ -28,9 +28,9 @@ export const useNews = (limit: number = 6) => {
           const parsedData = data.data.map((item: any) => {
             let thumb = item.thumbnail_url;
             if (thumb && thumb.startsWith('/')) {
-              // Ensure images load correctly in dev (localhost) vs prod
-              const baseUrl = import.meta.env.DEV ? 'http://localhost' : 'https://c3binhson.edu.vn';
-              thumb = baseUrl + thumb;
+              thumb = 'https://c3binhson.edu.vn' + thumb;
+            } else if (thumb && thumb.startsWith('http://')) {
+              thumb = 'https://' + thumb.substring(7);
             }
             return { ...item, thumbnail_url: thumb };
           });

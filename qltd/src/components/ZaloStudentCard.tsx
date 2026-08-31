@@ -6,6 +6,8 @@ interface ZaloStudentCardProps {
     ho_dem?: string;
     ten?: string;
     anh_the?: string;
+    avatar_url?: string;
+    anh_the_url?: string;
     ngay_sinh?: string;
     ten_lop?: string;
     lop?: string;
@@ -51,6 +53,7 @@ export const ZaloStudentCard: React.FC<ZaloStudentCardProps> = ({ studentData })
           <img 
             src={avatarUrl} 
             alt="Ảnh thẻ" 
+            referrerPolicy="no-referrer"
             onError={() => setImgError(true)}
             className="w-full h-full object-cover" 
           />
