@@ -22,9 +22,9 @@ if (isset($_SESSION['launch_app'])) {
             </button>
             
             <!-- Search Bar -->
-            <div class="flex items-center bg-gray-100 rounded-md px-2.5 h-[28px] border border-gray-200 ml-1 group cursor-text hidden sm:flex">
+            <div id="taskbarSearchContainer" class="flex items-center bg-gray-100 rounded-md px-2.5 h-[28px] border border-gray-200 ml-1 group cursor-text hidden sm:flex focus-within:border-blue-400 focus-within:bg-white transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-search text-[#224397] group-hover:text-[#FAB723] transition-colors" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg>
-                <input type="text" placeholder="Tìm kiếm..." class="bg-transparent border-none outline-none ml-2 text-[13px] w-28 text-gray-700 placeholder-gray-400" autocomplete="off">
+                <input type="text" id="taskbarSearchInput" placeholder="Tìm kiếm chức năng..." class="bg-transparent border-none outline-none ml-2 text-[13px] w-28 focus:w-44 transition-all duration-200 text-gray-700 placeholder-gray-400" autocomplete="off">
             </div>
         </div>
         
@@ -647,9 +647,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start Menu Toggle
     const startBtn = document.getElementById('startBtn');
     const startMenu = document.getElementById('startMenu');
+    const taskbarSearchContainer = document.getElementById('taskbarSearchContainer');
     if (startBtn && startMenu) {
         document.addEventListener('click', function(e) {
-            if (!startBtn.contains(e.target) && !startMenu.contains(e.target)) {
+            if (!startBtn.contains(e.target) && !startMenu.contains(e.target) && (!taskbarSearchContainer || !taskbarSearchContainer.contains(e.target))) {
                 startMenu.classList.remove('show');
             }
         });
@@ -1276,40 +1277,105 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // START MENU SEARCH
+    // UNIFIED SEARCH FOR TASKBAR & START MENU
     const startMenuSearch = document.getElementById('startMenuSearch');
-    if (startMenuSearch) {
-        startMenuSearch.addEventListener('input', function(e) {
-            const query = e.target.value.toLowerCase().trim();
-            const groups = document.querySelectorAll('.start-menu-group');
-            let totalVisible = 0;
-            
-            groups.forEach(group => {
-                const items = group.querySelectorAll('.start-menu-item');
-                let groupVisible = 0;
-                items.forEach(item => {
-                    const text = item.querySelector('.item-name').innerText.toLowerCase();
-                    if (text.includes(query)) {
-                        item.style.display = 'flex';
-                        groupVisible++;
-                        totalVisible++;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-                
-                if (groupVisible > 0) group.style.display = 'block';
-                else group.style.display = 'none';
+    const taskbarSearchInput = document.getElementById('taskbarSearchInput');
+    const startMenuEl = document.getElementById('startMenu');
+
+    function filterStartMenuItems(query) {
+        const q = (query || '').toLowerCase().trim();
+        const groups = document.querySelectorAll('.start-menu-group');
+        let totalVisible = 0;
+        
+        groups.forEach(group => {
+            const items = group.querySelectorAll('.start-menu-item');
+            let groupVisible = 0;
+            items.forEach(item => {
+                const nameEl = item.querySelector('.item-name');
+                const text = nameEl ? nameEl.innerText.toLowerCase() : '';
+                if (!q || text.includes(q)) {
+                    item.style.display = 'flex';
+                    groupVisible++;
+                    totalVisible++;
+                } else {
+                    item.style.display = 'none';
+                }
             });
             
-            const noResultsMsg = document.getElementById('noResultsMsg');
-            if (totalVisible === 0 && query !== '') noResultsMsg.classList.remove('hidden');
-            else noResultsMsg.classList.add('hidden');
+            if (groupVisible > 0) group.style.display = 'block';
+            else group.style.display = 'none';
         });
         
-        document.getElementById('startBtn').addEventListener('click', function() {
+        const noResultsMsg = document.getElementById('noResultsMsg');
+        if (noResultsMsg) {
+            if (totalVisible === 0 && q !== '') noResultsMsg.classList.remove('hidden');
+            else noResultsMsg.classList.add('hidden');
+        }
+        return totalVisible;
+    }
+
+    function handleSearchEnter() {
+        const visibleItem = document.querySelector('.start-menu-item[style*="display: flex"], .start-menu-item:not([style*="display: none"])');
+        if (visibleItem) {
+            visibleItem.click();
+            if (startMenuEl) startMenuEl.classList.remove('show');
+            if (taskbarSearchInput) taskbarSearchInput.blur();
+            if (startMenuSearch) startMenuSearch.blur();
+        }
+    }
+
+    if (startMenuSearch) {
+        startMenuSearch.addEventListener('input', function(e) {
+            const val = e.target.value;
+            if (taskbarSearchInput && taskbarSearchInput.value !== val) taskbarSearchInput.value = val;
+            filterStartMenuItems(val);
+        });
+
+        startMenuSearch.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearchEnter();
+            } else if (e.key === 'Escape') {
+                if (startMenuEl) startMenuEl.classList.remove('show');
+            }
+        });
+    }
+
+    if (taskbarSearchInput) {
+        taskbarSearchInput.addEventListener('focus', function() {
+            if (startMenuEl && !startMenuEl.classList.contains('show')) {
+                startMenuEl.classList.add('show');
+            }
+            filterStartMenuItems(this.value);
+        });
+
+        taskbarSearchInput.addEventListener('input', function(e) {
+            const val = e.target.value;
+            if (startMenuEl && !startMenuEl.classList.contains('show')) {
+                startMenuEl.classList.add('show');
+            }
+            if (startMenuSearch && startMenuSearch.value !== val) startMenuSearch.value = val;
+            filterStartMenuItems(val);
+        });
+
+        taskbarSearchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearchEnter();
+            } else if (e.key === 'Escape') {
+                if (startMenuEl) startMenuEl.classList.remove('show');
+                this.blur();
+            }
+        });
+    }
+
+    const startBtnEl = document.getElementById('startBtn');
+    if (startBtnEl && startMenuSearch) {
+        startBtnEl.addEventListener('click', function() {
             setTimeout(() => {
-                if (document.getElementById('startMenu').classList.contains('show')) startMenuSearch.focus();
+                if (startMenuEl && startMenuEl.classList.contains('show')) {
+                    startMenuSearch.focus();
+                }
             }, 50);
         });
     }
