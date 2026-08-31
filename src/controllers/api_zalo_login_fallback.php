@@ -7,7 +7,27 @@ require_once __DIR__ . '/../lib/zalo_auth_middleware.php';
 zalo_api_cors_headers('POST, OPTIONS');
 zalo_handle_options();
 
-$data = json_decode(file_get_contents('php://input'), true);
+$raw_input = file_get_contents('php://input');
+$data = json_decode($raw_input, true);
+
+// DEBUG TẠM THỜI - Ghi log ra file để kiểm tra
+$debug_log = [
+    'time' => date('Y-m-d H:i:s'),
+    'raw_input' => $raw_input,
+    'raw_length' => strlen($raw_input),
+    'parsed_username' => $data['username'] ?? 'NULL',
+    'parsed_password' => isset($data['password']) ? '***SET***' : 'NULL',
+    'content_type' => $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? 'N/A',
+    'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'N/A',
+    'get_params' => $_GET,
+    'post_params' => array_keys($_POST),
+];
+file_put_contents(
+    __DIR__ . '/../../zalo_login_debug.log',
+    json_encode($debug_log, JSON_UNESCAPED_UNICODE) . "\n",
+    FILE_APPEND
+);
+
 
 $username = trim($data['username'] ?? ''); // Mã HS hoặc CCCD (nếu có cột cccd)
 $password = trim($data['password'] ?? ''); // Mật khẩu (Ngày sinh ddmmyyyy)
@@ -21,8 +41,8 @@ if (empty($username) || empty($password)) {
 try {
     $db = get_db_connection();
 
-    // Tìm kiếm theo mã học sinh
-    $stmt = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, ngay_sinh, mat_khau_hash, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan FROM ho_so_hoc_sinh WHERE ma_hoc_sinh = ? LIMIT 1");
+    // Tìm kiếm theo mã học sinh (bảng hoc_sinh chứa tài khoản đăng nhập)
+    $stmt = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, ngay_sinh, mat_khau_hash, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan FROM hoc_sinh WHERE ma_hoc_sinh = ? LIMIT 1");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
@@ -79,7 +99,7 @@ try {
 
         // Nếu đăng nhập thành công và có truyền zalo_id -> tự động liên kết
         if (!empty($zalo_id)) {
-            $update_stmt = $db->prepare("UPDATE ho_so_hoc_sinh SET zalo_id = ? WHERE ma_hoc_sinh = ?");
+            $update_stmt = $db->prepare("UPDATE hoc_sinh SET zalo_id = ? WHERE ma_hoc_sinh = ?");
             $update_stmt->execute([$zalo_id, $user['ma_hoc_sinh']]);
         }
 
@@ -107,7 +127,19 @@ try {
         ]);
         exit();
     } else {
-        echo json_encode(['success' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác.']);
+        // DEBUG TẠM THỜI - Xóa sau khi fix xong
+        $debug = [
+            'user_found' => ($user !== false && $user !== null),
+            'username_sent' => $username,
+            'is_valid_password' => $is_valid_password,
+        ];
+        if ($user) {
+            $debug['ngay_sinh_db'] = $user['ngay_sinh'];
+            $debug['has_hash'] = !empty($user['mat_khau_hash']);
+            $debug['trang_thai_hoc_tap'] = $user['trang_thai_hoc_tap'];
+            $debug['trang_thai_tai_khoan'] = $user['trang_thai_tai_khoan'];
+        }
+        echo json_encode(['success' => false, 'message' => 'Tài khoản hoặc mật khẩu không chính xác.', '_debug' => $debug]);
         exit();
     }
 
