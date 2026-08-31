@@ -24,7 +24,7 @@ if (isset($_SESSION['launch_app'])) {
             <!-- Search Bar -->
             <div id="taskbarSearchContainer" class="flex items-center bg-gray-100 rounded-md px-2.5 h-[28px] border border-gray-200 ml-1 group cursor-text hidden sm:flex focus-within:border-blue-400 focus-within:bg-white transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-search text-[#224397] group-hover:text-[#FAB723] transition-colors" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg>
-                <input type="text" id="taskbarSearchInput" placeholder="Tìm kiếm chức năng..." class="bg-transparent border-none outline-none ml-2 text-[13px] w-28 focus:w-44 transition-all duration-200 text-gray-700 placeholder-gray-400" autocomplete="off">
+                <input type="text" id="taskbarSearchInput" placeholder="Tìm kiếm..." class="bg-transparent border-none outline-none ml-2 text-[13px] w-28 focus:w-44 transition-all duration-200 text-gray-700 placeholder-gray-400" autocomplete="off">
             </div>
         </div>
         
@@ -35,7 +35,7 @@ if (isset($_SESSION['launch_app'])) {
         
         <!-- CENTER ABSOLUTE: Copyright -->
         <div id="copyrightText" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-[10px] text-gray-500 opacity-70 pointer-events-none hidden lg:flex w-full z-0 select-none transition-opacity duration-300">
-            <span class="font-bold">Copyright &copy; <?= date('Y') ?> - Hệ thống Đánh Giá Thi Đua Thi Đua <span class="italic font-normal">Version 2.0.0</span></span>
+            <span class="font-bold">Copyright &copy; <?= date('Y') ?> - Hệ thống Đánh Giá Thi Đua Thi Đua <span class="italic font-normal">Version 7.2.4</span></span>
             <span>Thực hiện bởi <a href="https://zalo.me/0362566146" target="_blank" class="hover:text-blue-500 pointer-events-auto transition-colors text-inherit decoration-transparent hover:underline" title="Liên hệ Zalo: 0362566146">Phạm Văn Thành Đồng</a></span>
         </div>
         

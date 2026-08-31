@@ -139,11 +139,12 @@ const SettingsPage: React.FC = () => {
   const studentName = displayData ? `${displayData.ho_dem || ''} ${displayData.ten || ''}`.trim() : 'Học sinh';
   const studentId = displayData?.ma_hoc_sinh || 'Chưa cập nhật';
 
+  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
   const serverAvatarUrl = displayData?.avatar_url || displayData?.anh_the_url
     ? (displayData.avatar_url || displayData.anh_the_url)
     : (displayData?.anh_the
         ? (displayData.anh_the.startsWith('http') ? displayData.anh_the : `${import.meta.env.VITE_API_URL || 'https://c3binhson.edu.vn/thidua'}/public/assets/anh_the/${displayData.anh_the}`)
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=224397&color=ffffff`);
+        : schoolLogo);
 
   const avatarUrl = serverAvatarUrl;
 
@@ -161,8 +162,14 @@ const SettingsPage: React.FC = () => {
 
         {/* BLUE HEADER */}
         <div className="bg-[#2563eb] pt-12 pb-16 px-4 flex items-center gap-4 relative z-0">
-          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 bg-white flex-shrink-0">
-            <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = defaultAvatar; }} />
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 bg-white flex-shrink-0 flex items-center justify-center">
+            <img 
+              src={avatarUrl} 
+              alt="Avatar" 
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover" 
+              onError={(e) => { e.currentTarget.src = schoolLogo; }} 
+            />
           </div>
           <div className="flex flex-col text-white">
             <div className="text-[18px] font-bold leading-tight">{studentName}</div>

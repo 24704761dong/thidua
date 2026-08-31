@@ -180,12 +180,13 @@ const HomePage: React.FC = () => {
 
 
   // Format tên, avatar
+  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
   const fullName = `${student.ho_dem || ''} ${student.ten || ''}`.trim();
   const serverAvatarUrl = student.avatar_url || student.anh_the_url
     ? (student.avatar_url || student.anh_the_url)
     : (student.anh_the
         ? (student.anh_the.startsWith('http') ? student.anh_the : `${import.meta.env.VITE_API_URL || 'https://c3binhson.edu.vn/thidua'}/public/assets/anh_the/${student.anh_the}`)
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=224397&color=ffffff`);
+        : schoolLogo);
 
   // Format ngày sinh (yyyy-mm-dd to dd/mm/yyyy)
   const formatDate = (dateStr: string) => {
@@ -227,14 +228,14 @@ const HomePage: React.FC = () => {
             >
               {/* Avatar */}
               <div className="flex justify-center mb-4">
-                <div className="w-24 h-24 rounded-full border-[4px] border-[#224397]/25 overflow-hidden">
+                <div className="w-24 h-24 rounded-full border-[4px] border-[#224397]/25 overflow-hidden bg-white flex items-center justify-center">
                   <img 
                     src={serverAvatarUrl} 
                     alt="Avatar" 
                     referrerPolicy="no-referrer"
                     className="w-full h-full rounded-full object-cover" 
                     onError={(e) => {
-                      e.currentTarget.src = 'https://c3binhson.edu.vn/thidua/public/assets/img/anhthegoc.JPG';
+                      e.currentTarget.src = schoolLogo;
                     }}
                   />
                 </div>

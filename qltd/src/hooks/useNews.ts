@@ -32,6 +32,9 @@ export const useNews = (limit: number = 6) => {
             } else if (thumb && thumb.startsWith('http://')) {
               thumb = 'https://' + thumb.substring(7);
             }
+            if (thumb) {
+              thumb = `https://c3binhson.edu.vn/thidua/api/zalo/image-proxy?url=${encodeURIComponent(thumb)}`;
+            }
             return { ...item, thumbnail_url: thumb };
           });
           setNews(parsedData);

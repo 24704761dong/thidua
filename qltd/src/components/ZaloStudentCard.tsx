@@ -34,13 +34,14 @@ export const ZaloStudentCard: React.FC<ZaloStudentCardProps> = ({ studentData })
     return dob;
   };
 
+  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
   const avatarUrl = studentData?.avatar_url || studentData?.anh_the_url
     ? (studentData.avatar_url || studentData.anh_the_url)
     : (studentData?.anh_the
         ? (studentData.anh_the.startsWith('http')
             ? studentData.anh_the
             : `${import.meta.env.VITE_API_URL || 'https://c3binhson.edu.vn/thidua'}/public/assets/anh_the/${studentData.anh_the}`)
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=1e3a8a&color=ffffff`);
+        : schoolLogo);
 
   const qrValue = studentData?.ma_hoc_sinh || studentData?.cccd || fullName;
 
@@ -58,9 +59,12 @@ export const ZaloStudentCard: React.FC<ZaloStudentCardProps> = ({ studentData })
             className="w-full h-full object-cover" 
           />
         ) : (
-          <div className="w-full h-full bg-[#1e3a8a] text-white flex items-center justify-center font-black text-xl">
-            {initialChar}
-          </div>
+          <img 
+            src={schoolLogo} 
+            alt="Logo" 
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-contain p-2" 
+          />
         )}
       </div>
 

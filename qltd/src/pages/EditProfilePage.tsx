@@ -183,6 +183,7 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
+  const schoolLogo = 'https://c3binhson.edu.vn/thidua/public/assets/img/logoapp.png';
   const fullName = `${rawData?.ho_dem || ''} ${rawData?.ten || ''}`.trim() || 'Học sinh';
   const avatarUrl = avatarPreview 
     ? avatarPreview 
@@ -190,7 +191,7 @@ const EditProfilePage: React.FC = () => {
         ? (rawData.avatar_url || rawData.anh_the_url)
         : (editConfig?.pending_data?.anh_the || rawData?.anh_the
             ? `${import.meta.env.VITE_API_URL || 'https://c3binhson.edu.vn/thidua'}/public/assets/anh_the/${editConfig?.pending_data?.anh_the || rawData?.anh_the}`
-            : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=1e3a8a&color=ffffff`));
+            : schoolLogo));
 
   if (initialLoading) {
     return (
@@ -226,8 +227,14 @@ const EditProfilePage: React.FC = () => {
         {/* Khung 1: Ảnh thẻ */}
         <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-100 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-13 h-17 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 relative shadow-2xs">
-              <img src={avatarUrl} alt="Ảnh thẻ" className="w-full h-full object-cover" />
+            <div className="w-13 h-17 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 relative shadow-2xs flex items-center justify-center">
+              <img 
+                src={avatarUrl} 
+                alt="Ảnh thẻ" 
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover" 
+                onError={(e) => { e.currentTarget.src = schoolLogo; }}
+              />
             </div>
             <div>
               <span className="text-xs font-bold text-slate-800 block">Ảnh thẻ học sinh</span>
