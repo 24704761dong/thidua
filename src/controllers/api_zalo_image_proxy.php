@@ -15,16 +15,37 @@ $type = $_GET['type'] ?? '';
 $path = $_GET['path'] ?? '';
 $url = $_GET['url'] ?? '';
 
-// 1. Phục vụ ảnh từ URL tuyệt đối (như banner tin tức c3binhson.edu.vn/storage/...)
+// 1. Phục vụ ảnh thẻ từ file cục bộ (nhanh nhất và không bao giờ bị Cloudflare chặn)
+if (!empty($path) || (!empty($url) && strpos($url, '/public/assets/') !== false)) {
+    $targetPath = !empty($path) ? $path : parse_url($url, PHP_URL_PATH);
+    // Loại bỏ prefix /thidua/
+    $relPath = preg_replace('#^/thidua/#', '', $targetPath);
+    $fullPath = realpath(__DIR__ . '/../../' . ltrim($relPath, '/'));
+
+    if ($fullPath && file_exists($fullPath) && strpos($fullPath, realpath(__DIR__ . '/../../public/assets/')) === 0) {
+        $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+        $mimeTypes = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp'
+        ];
+        header('Content-Type: ' . ($mimeTypes[$ext] ?? 'image/jpeg'));
+        header('Cache-Control: public, max-age=604800, immutable');
+        readfile($fullPath);
+        exit();
+    }
+}
+
+// 2. Phục vụ ảnh từ URL tuyệt đối (như banner tin tức c3binhson.edu.vn/storage/...)
 if (!empty($url)) {
-    // Chỉ cho phép tải từ domain c3binhson.edu.vn hoặc r2 storage
     if (strpos($url, 'c3binhson.edu.vn') !== false || strpos($url, 'r2.cloudflarestorage.com') !== false) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        // Không gửi Referer để tránh Hotlink Protection
         curl_setopt($ch, CURLOPT_REFERER, '');
         $data = curl_exec($ch);
         $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
@@ -40,7 +61,7 @@ if (!empty($url)) {
     }
 }
 
-// 2. Phục vụ ảnh thẻ hoặc logo trường từ local
+// 3. Phục vụ logo trường
 if ($type === 'logo') {
     $logoPath = __DIR__ . '/../../public/assets/img/logo.png';
     if (file_exists($logoPath)) {
@@ -51,7 +72,7 @@ if ($type === 'logo') {
     }
 }
 
-// 3. Fallback: Trả về logo trường
+// 4. Fallback: Trả về logo trường
 $fallback = __DIR__ . '/../../public/assets/img/logo.png';
 if (file_exists($fallback)) {
     header('Content-Type: image/png');

@@ -42,19 +42,23 @@ try {
         exit();
     }
 
-    // Xử lý link avatar ảnh thẻ (luôn dùng HTTPS cho Zalo Mini App)
+    // Xử lý link avatar ảnh thẻ (luôn dùng proxy cho Zalo Mini App để tránh bị Cloudflare chặn Hotlink)
     require_once __DIR__ . '/../lib/helpers.php';
     $raw_avatar_url = get_student_avatar_url($user['anh_the'] ?? '', $user['anh_the_driver'] ?? 'local', $user['anh_the_cloud_key'] ?? null);
     if (!empty($raw_avatar_url)) {
+        $host = $_SERVER['HTTP_HOST'] ?? 'c3binhson.edu.vn';
         if (strpos($raw_avatar_url, 'http://') === 0) {
             $raw_avatar_url = 'https://' . substr($raw_avatar_url, 7);
         } elseif (strpos($raw_avatar_url, 'https://') !== 0) {
-            $host = $_SERVER['HTTP_HOST'] ?? 'c3binhson.edu.vn';
             $raw_avatar_url = 'https://' . $host . $raw_avatar_url;
         }
+        $proxy_avatar_url = 'https://' . $host . '/thidua/api/zalo/image-proxy?url=' . urlencode($raw_avatar_url);
+        $user['avatar_url'] = $proxy_avatar_url;
+        $user['anh_the_url'] = $proxy_avatar_url;
+    } else {
+        $user['avatar_url'] = null;
+        $user['anh_the_url'] = null;
     }
-    $user['avatar_url'] = $raw_avatar_url;
-    $user['anh_the_url'] = $raw_avatar_url;
 
     $stmt_max_year = $db->prepare("SELECT MAX(nam_hoc_id) FROM quatrinh_hoc_tap WHERE ma_hoc_sinh = ?");
     $stmt_max_year->execute([$user['ma_hoc_sinh']]);
