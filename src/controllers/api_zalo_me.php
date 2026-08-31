@@ -42,13 +42,16 @@ try {
         exit();
     }
 
-    // Xử lý link avatar ảnh thẻ
+    // Xử lý link avatar ảnh thẻ (luôn dùng HTTPS cho Zalo Mini App)
     require_once __DIR__ . '/../lib/helpers.php';
     $raw_avatar_url = get_student_avatar_url($user['anh_the'] ?? '', $user['anh_the_driver'] ?? 'local', $user['anh_the_cloud_key'] ?? null);
-    if (!empty($raw_avatar_url) && strpos($raw_avatar_url, 'http') !== 0) {
-        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $raw_avatar_url = $scheme . '://' . $host . $raw_avatar_url;
+    if (!empty($raw_avatar_url)) {
+        if (strpos($raw_avatar_url, 'http://') === 0) {
+            $raw_avatar_url = 'https://' . substr($raw_avatar_url, 7);
+        } elseif (strpos($raw_avatar_url, 'https://') !== 0) {
+            $host = $_SERVER['HTTP_HOST'] ?? 'c3binhson.edu.vn';
+            $raw_avatar_url = 'https://' . $host . $raw_avatar_url;
+        }
     }
     $user['avatar_url'] = $raw_avatar_url;
     $user['anh_the_url'] = $raw_avatar_url;
