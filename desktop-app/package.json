@@ -1,6 +1,6 @@
 {
   "name": "thidua_desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Hệ thống Quản lý Thi đua Desktop",
   "main": "main.js",
   "scripts": {
