@@ -48,24 +48,50 @@ try {
             exit;
         }
 
-        // Làm sạch chuỗi số CCCD (loại bỏ ký tự thừa)
-        $clean_cccd = preg_replace('/[^0-9a-zA-Z_-]/', '', $text);
+        $text_lower = mb_strtolower(trim($text), 'UTF-8');
+        $mini_app_url = "https://zalo.me/s/3384162828772052652/";
 
-        if (empty($clean_cccd)) {
-            $reply = "Xin chào! Vui lòng nhập chính xác số CCCD hoặc Mã định danh học sinh của bạn để đăng ký nhận thông báo tự động từ Trường THPT Bình Sơn.";
+        // 1. Kiểm tra nếu người dùng hỏi menu / trợ giúp / mở app
+        if (in_array($text_lower, ['app', 'mini app', 'miniapp', 'menu', 'tro giup', 'trợ giúp', 'help', 'huong dan', 'hướng dẫn', 'bat dau', 'bắt đầu', 'start', 'hello', 'hi', 'xin chao', 'xin chào'])) {
+            // Kiểm tra xem Zalo này đã liên kết học sinh nào chưa
+            $stmt_u = $db->prepare("SELECT id, ho_dem, ten, ma_hoc_sinh FROM ho_so_hoc_sinh WHERE zalo_chat_id = ? OR zalo_id = ? LIMIT 1");
+            $stmt_u->execute([$sender_id, $sender_id]);
+            $stu = $stmt_u->fetch(PDO::FETCH_ASSOC);
+
+            if ($stu) {
+                $stName = trim("{$stu['ho_dem']} {$stu['ten']}");
+                $reply = "Xin chào {$stName} (Mã HS: {$stu['ma_hoc_sinh']})!\n\n"
+                       . "Các tiện ích dành cho bạn:\n"
+                       . "• Mở Zalo Mini App: {$mini_app_url}\n"
+                       . "• Nhập 'diem' để xem hướng dẫn tra cứu điểm / tính GPA\n"
+                       . "• Nhập 'nghi' để xem hướng dẫn xin vắng học trực tuyến\n"
+                       . "• Nhập 'vipham' để tra cứu lịch sử thi đua\n\n"
+                       . "Hệ thống sẽ tự động gửi thông báo điểm số, vi phạm, lịch trực và khảo sát đến bạn tại đây!";
+            } else {
+                $reply = "Chào mừng bạn đến với Zalo Bot Trường THPT Bình Sơn!\n\n"
+                       . "👉 Vui lòng nhập số Căn cước công dân (CCCD) hoặc Mã định danh học sinh của bạn để liên kết tài khoản và nhận thông báo tự động.\n\n"
+                       . "📱 Mở Zalo Mini App trường: {$mini_app_url}";
+            }
             send_zalo_bot_message($sender_id, $reply);
-            echo json_encode([
-                'success' => true,
-                'reply_message' => $reply
-            ]);
+            echo json_encode(['success' => true, 'reply_message' => $reply]);
             exit;
         }
 
-        // Tra cứu học sinh theo CCCD / Mã học sinh (kèm quá trình học tập mới nhất)
+        // 2. Tra cứu học sinh theo CCCD / Mã học sinh / Số điện thoại
+        $clean_cccd = preg_replace('/[^0-9a-zA-Z_-]/', '', $text);
+
+        if (empty($clean_cccd)) {
+            $reply = "Xin chào! Vui lòng nhập chính xác số CCCD hoặc Mã định danh học sinh của bạn để đăng ký nhận thông báo tự động từ Trường THPT Bình Sơn.\n\nHoặc mở Mini App tại: {$mini_app_url}";
+            send_zalo_bot_message($sender_id, $reply);
+            echo json_encode(['success' => true, 'reply_message' => $reply]);
+            exit;
+        }
+
+        // Tra cứu học sinh theo CCCD / Mã học sinh / SĐT
         $stmt = $db->prepare("
             SELECT 
                 h.*, 
-                l.ten_lop, 
+                lh.ten_lop, 
                 nh.ten_nam_hoc 
             FROM ho_so_hoc_sinh h
             LEFT JOIN (
@@ -77,32 +103,26 @@ try {
                     GROUP BY ma_hoc_sinh
                 ) qt2 ON qt1.ma_hoc_sinh = qt2.ma_hoc_sinh AND qt1.nam_hoc_id = qt2.max_nam_hoc_id
             ) q ON h.ma_hoc_sinh = q.ma_hoc_sinh
-            LEFT JOIN lop_hoc l ON q.lop_hoc_id = l.id
+            LEFT JOIN raw_lop_hoc lh ON q.lop_hoc_id = lh.id
             LEFT JOIN nam_hoc nh ON q.nam_hoc_id = nh.id
-            WHERE h.ma_hoc_sinh = ? OR h.sdt = ?
+            WHERE h.ma_hoc_sinh = ? OR h.sdt = ? OR (h.ma_moet IS NOT NULL AND h.ma_moet = ?)
             LIMIT 1
         ");
-        $stmt->execute([$clean_cccd, $clean_cccd]);
+        $stmt->execute([$clean_cccd, $clean_cccd, $clean_cccd]);
         $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$student) {
-            $reply = "Không tìm thấy học sinh có số CCCD/Mã định danh: [{$clean_cccd}] trên hệ thống Trường THPT Bình Sơn.\n\nVui lòng kiểm tra lại hoặc liên hệ giáo viên chủ nhiệm/nhà trường để cập nhật hồ sơ.";
+            $reply = "Không tìm thấy học sinh có thông tin [{$clean_cccd}] trên hệ thống Trường THPT Bình Sơn.\n\nVui lòng kiểm tra lại số CCCD/Mã học sinh hoặc liên hệ GVCN để được hỗ trợ.";
             send_zalo_bot_message($sender_id, $reply);
-            echo json_encode([
-                'success' => false,
-                'reply_message' => $reply
-            ]);
+            echo json_encode(['success' => false, 'reply_message' => $reply]);
             exit;
         }
 
         // 1. Kiểm tra xem số CCCD này đã liên kết với Zalo ID khác chưa
         if (!empty($student['zalo_chat_id']) && $student['zalo_chat_id'] !== $sender_id) {
-            $reply = "Số CCCD [{$clean_cccd}] đã được liên kết với một tài khoản Zalo khác.\n\nMỗi học sinh chỉ được liên kết 1 tài khoản Zalo duy nhất. Vui lòng liên hệ Quản trị viên/Giáo viên nhà trường để hủy liên kết cũ trước khi đăng ký tài khoản Zalo mới.";
+            $reply = "Học sinh [{$student['ho_dem']} {$student['ten']}] đã được liên kết với một tài khoản Zalo khác.\n\nMỗi học sinh chỉ liên kết 1 tài khoản Zalo. Vui lòng liên hệ Quản trị viên/Giáo viên để hủy liên kết cũ trước khi đăng ký tài khoản Zalo mới.";
             send_zalo_bot_message($sender_id, $reply);
-            echo json_encode([
-                'success' => false,
-                'reply_message' => $reply
-            ]);
+            echo json_encode(['success' => false, 'reply_message' => $reply]);
             exit;
         }
 
@@ -113,12 +133,9 @@ try {
 
         if ($existing_sender_student) {
             $oldName = trim("{$existing_sender_student['ho_dem']} {$existing_sender_student['ten']}");
-            $reply = "Tài khoản Zalo này hiện đang liên kết với học sinh: {$oldName} (CCCD: {$existing_sender_student['ma_hoc_sinh']}).\n\nMỗi tài khoản Zalo chỉ được liên kết với 1 học sinh. Vui lòng liên hệ Quản trị viên nhà trường để gỡ liên kết cũ trước khi liên kết học sinh mới.";
+            $reply = "Tài khoản Zalo này hiện đang liên kết với học sinh: {$oldName} (Mã HS: {$existing_sender_student['ma_hoc_sinh']}).\n\nMỗi tài khoản Zalo chỉ liên kết với 1 học sinh.";
             send_zalo_bot_message($sender_id, $reply);
-            echo json_encode([
-                'success' => false,
-                'reply_message' => $reply
-            ]);
+            echo json_encode(['success' => false, 'reply_message' => $reply]);
             exit;
         }
 
@@ -131,18 +148,19 @@ try {
             $className = $student['ten_lop'] ?? $student['lop'] ?? 'Chưa xếp lớp';
         }
         $nienKhoa = $student['nien_khoa'] ?? 'Chưa cập nhật';
-        $namHoc = $student['ten_nam_hoc'] ?? '2026 - 2027';
 
-        // Lưu cứng vĩnh viễn zalo_chat_id cho học sinh
-        $stmt_update = $db->prepare("UPDATE ho_so_hoc_sinh SET zalo_chat_id = ? WHERE id = ?");
-        $stmt_update->execute([$sender_id, $student['id']]);
+        // Đồng bộ lưu cả zalo_chat_id và zalo_id cho học sinh
+        $stmt_update = $db->prepare("UPDATE ho_so_hoc_sinh SET zalo_chat_id = ?, zalo_id = COALESCE(zalo_id, ?) WHERE id = ?");
+        $stmt_update->execute([$sender_id, $sender_id, $student['id']]);
 
-        $reply = "XÁC THỰC THÀNH CÔNG!\n\n"
-               . "Học sinh: {$fullName}\n"
-               . "Lớp: {$className}\n"
-               . "Niên khóa: {$nienKhoa}\n"
-               . "Số CCCD/Mã HS: {$student['ma_hoc_sinh']}\n\n"
-               . "Tài khoản Zalo này đã được liên kết với hệ thống THPT Bình Sơn. Bạn sẽ nhận được các thông báo học tập, thi đua, kết quả điểm thi, lịch thi và khảo sát trực tiếp tại khung chat này!";
+        $reply = "🎉 XÁC THỰC THÀNH CÔNG!\n\n"
+               . "👤 Học sinh: {$fullName}\n"
+               . "🏫 Lớp: {$className}\n"
+               . "📅 Niên khóa: {$nienKhoa}\n"
+               . "🆔 Số CCCD/Mã HS: {$student['ma_hoc_sinh']}\n\n"
+               . "✅ Tài khoản Zalo này đã được liên kết với hệ thống THPT Bình Sơn.\n"
+               . "Bạn sẽ nhận được thông báo học tập, thi đua, kết quả điểm thi, lịch trực và khảo sát trực tiếp tại đây.\n\n"
+               . "📱 Mở Zalo Mini App ngay: {$mini_app_url}";
 
         // Gửi tin nhắn phản hồi trực tiếp tới Zalo của học sinh
         send_zalo_bot_message($sender_id, $reply);
