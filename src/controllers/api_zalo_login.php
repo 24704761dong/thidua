@@ -55,6 +55,7 @@ try {
 
     // 2. Nếu có Zalo ID -> Kiểm tra xem tài khoản đã được liên kết từ trước chưa (Silent Auto-Login)
     if (!empty($zalo_id)) {
+        // Kiểm tra học sinh trước
         $stmt = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan FROM ho_so_hoc_sinh WHERE zalo_id = ? AND zalo_id IS NOT NULL AND zalo_id != '' LIMIT 1");
         $stmt->execute([$zalo_id]);
         $user = $stmt->fetch();
@@ -66,8 +67,6 @@ try {
             }
 
             $must_change_password = ($user['trang_thai_tai_khoan'] !== 'Đã đổi MK');
-
-            // Đăng nhập thành công, tạo JWT
             $jwt_token = zalo_jwt_encode([
                 'student_id' => $user['id'],
                 'ma_hoc_sinh' => $user['ma_hoc_sinh'],
@@ -88,9 +87,35 @@ try {
             ]);
             exit();
         }
+
+        // Kiểm tra giáo viên / admin (bảng users)
+        $stmt_u = $db->prepare("SELECT id, ten_dang_nhap, ho_ten, vai_tro, quyen_han FROM users WHERE zalo_id = ? AND zalo_id IS NOT NULL AND zalo_id != '' LIMIT 1");
+        $stmt_u->execute([$zalo_id]);
+        $user_admin = $stmt_u->fetch();
+
+        if ($user_admin) {
+            $jwt_token = zalo_jwt_encode([
+                'student_id' => $user_admin['id'],
+                'ma_hoc_sinh' => $user_admin['ten_dang_nhap'],
+                'role' => $user_admin['vai_tro']
+            ]);
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Đăng nhập Zalo thành công!',
+                'token' => $jwt_token,
+                'must_change_password' => false,
+                'user' => [
+                    'id' => $user_admin['id'],
+                    'name' => $user_admin['ho_ten'],
+                    'must_change_password' => false,
+                    'quyen_truy_cap' => json_decode($user_admin['quyen_han'] ?: '{}', true)
+                ]
+            ]);
+            exit();
+        }
     }
 
-    // 3. Nếu có Số điện thoại (giải mã từ Zalo hoặc truyền lên) -> Tìm học sinh theo SĐT
+    // 3. Nếu có Số điện thoại (giải mã từ Zalo hoặc truyền lên) -> Tìm theo SĐT
     if (!empty($phone)) {
         // Chuẩn hóa SĐT: loại bỏ prefix +84 hoặc 84, đảm bảo bắt đầu bằng 0
         $clean_phone = preg_replace('/[^0-9]/', '', $phone);
@@ -99,7 +124,7 @@ try {
             $clean_phone = '0' . $clean_phone;
         }
 
-        // Tìm chính xác theo SĐT trong hồ sơ học sinh
+        // 3.1 Tìm chính xác theo SĐT trong hồ sơ học sinh
         $stmt = $db->prepare("SELECT id, ma_hoc_sinh, ho_dem, ten, quyen_truy_cap, trang_thai_hoc_tap, trang_thai_tai_khoan FROM ho_so_hoc_sinh WHERE sdt = ? OR REPLACE(REPLACE(REPLACE(sdt, ' ', ''), '.', ''), '-', '') = ? LIMIT 1");
         $stmt->execute([$clean_phone, $clean_phone]);
         $user = $stmt->fetch();
@@ -110,15 +135,13 @@ try {
                 exit();
             }
 
-            // Nếu khớp SĐT, tự động liên kết zalo_id cho học sinh này để các lần sau vào app tự động
+            // Tự động liên kết zalo_id
             if (!empty($zalo_id)) {
                 $update_stmt = $db->prepare("UPDATE ho_so_hoc_sinh SET zalo_id = ? WHERE id = ?");
                 $update_stmt->execute([$zalo_id, $user['id']]);
             }
 
             $must_change_password = ($user['trang_thai_tai_khoan'] !== 'Đã đổi MK');
-
-            // Tạo JWT
             $jwt_token = zalo_jwt_encode([
                 'student_id' => $user['id'],
                 'ma_hoc_sinh' => $user['ma_hoc_sinh'],
@@ -138,13 +161,44 @@ try {
                 ]
             ]);
             exit();
-        } else {
+        }
+
+        // 3.2 Tìm theo SĐT trong bảng users (Admin / Giáo viên)
+        $stmt_u = $db->prepare("SELECT id, ten_dang_nhap, ho_ten, vai_tro, quyen_han FROM users WHERE sdt = ? OR REPLACE(REPLACE(REPLACE(sdt, ' ', ''), '.', ''), '-', '') = ? LIMIT 1");
+        $stmt_u->execute([$clean_phone, $clean_phone]);
+        $user_admin = $stmt_u->fetch();
+
+        if ($user_admin) {
+            if (!empty($zalo_id)) {
+                $update_stmt = $db->prepare("UPDATE users SET zalo_id = ? WHERE id = ?");
+                $update_stmt->execute([$zalo_id, $user_admin['id']]);
+            }
+
+            $jwt_token = zalo_jwt_encode([
+                'student_id' => $user_admin['id'],
+                'ma_hoc_sinh' => $user_admin['ten_dang_nhap'],
+                'role' => $user_admin['vai_tro']
+            ]);
             echo json_encode([
-                'success' => false, 
-                'message' => "Số điện thoại Zalo ({$clean_phone}) chưa trùng khớp với hồ sơ học sinh. Vui lòng đăng nhập bằng Mã học sinh và Mật khẩu để liên kết tài khoản."
+                'success' => true, 
+                'message' => 'Đăng nhập Zalo thành công!',
+                'token' => $jwt_token,
+                'must_change_password' => false,
+                'user' => [
+                    'id' => $user_admin['id'],
+                    'name' => $user_admin['ho_ten'],
+                    'must_change_password' => false,
+                    'quyen_truy_cap' => json_decode($user_admin['quyen_han'] ?: '{}', true)
+                ]
             ]);
             exit();
         }
+
+        echo json_encode([
+            'success' => false, 
+            'message' => "Số điện thoại Zalo ({$clean_phone}) chưa có trong hệ thống. Vui lòng đăng nhập bằng Mã tài khoản và Mật khẩu trước để liên kết Zalo."
+        ]);
+        exit();
     }
 
     // 4. Nếu không tìm thấy
@@ -157,3 +211,4 @@ try {
 } catch (Exception $e) {
     zalo_api_error('Đăng nhập thất bại, vui lòng thử lại sau.', 500, $e);
 }
+
