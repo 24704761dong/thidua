@@ -1,0 +1,47 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+src/config/firebase/service-account.json
+*service-account*.json
+*.pem
+*.key
+credentials*.json
+
+# Dependencies
+vendor/
+node_modules/
+desktop-app/node_modules/
+
+# Build releases & Executables
+desktop-app/release/
+desktop-app/dist/
+*.exe
+*.dmg
+*.zip
+*.tar.gz
+
+# Logs & Cache
+logs/
+*.log
+login_debug.log
+error_log.txt
+request_log.txt
+
+# Database dumps & Backups
+*.sql
+backup_db_full_before_clean.sql
+database_clean_for_cpanel.sql
+
+# User uploads & heavy media
+public/uploads/
+public/minhchung/
+
+# Sub-projects with their own repo
+qltd-mobile/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

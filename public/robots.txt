@@ -1,0 +1,14 @@
+User-agent: *
+
+# CHẶN (Disallow) các khu vực quản trị và API
+Disallow: /thidua/admin/
+Disallow: /thidua/hocsinh/
+Disallow: /thidua/api/
+Disallow: /thidua/tasks/
+
+# CHO PHÉP (Allow) các trang công khai
+Allow: /thidua/tracuu
+Allow: /thidua/gioi-thieu
+
+# Chỉ đường đến Sitemap (thay [TÊN MIỀN CỦA BẠN])
+Sitemap: https://c3binhson.edu.vn/thidua/sitemap.xml

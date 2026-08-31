@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kích Hoạt Ứng Dụng Desktop</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            -webkit-app-region: drag;
+            /* Cho phép kéo thả */
+        }
+
+        .container {
+            position: relative;
+            width: 420px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column;
+            padding: 40px; box-sizing: border-box;
+            -webkit-app-region: no-drag; 
+            animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: 0.2s;
+            -webkit-app-region: no-drag;
+        }
+
+        .close-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .logo-container {
+            display: flex; justify-content: center; margin-bottom: 25px;
+            -webkit-app-region: drag;
+        }
+        .logo-container img {
+            width: 85px; height: 85px; object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+        }
+        h2 {
+            color: #1e293b;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        p { color: #64748b; font-size: 14px; margin-bottom: 30px; line-height: 1.6; text-align: center; }
+        label { font-weight: 600; font-size: 13px; color: #334155; margin-bottom: 5px; display: block; }
+        input { 
+            width: 100%; padding: 14px; border: 1.5px solid #e2e8f0; 
+            border-radius: 6px; box-sizing: border-box; font-size: 15px; 
+            margin-bottom: 20px; outline: none; transition: all 0.2s;
+            text-align: center; letter-spacing: 0.5px;
+            color: #334155; font-family: inherit;
+        }
+        input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        input::placeholder { color: #94a3b8; }
+        
+        button {
+            background: #2563eb; color: white; border: none; padding: 14px; 
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            width: 100%; font-size: 15px;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+        button:hover { background: #1d4ed8; box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3); transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+        .error { color: #ef4444; font-size: 13px; margin-bottom: 15px; display: none; text-align: center; font-weight: 600; background: #fef2f2; padding: 10px; border-radius: 6px; border: 1px solid #fee2e2; }
+    </style>
+</head>
+
+<body>
+    <!-- Overlay for dragging if they click outside the container -->
+    <div style="position: absolute; inset: 0; -webkit-app-region: drag; z-index: -1;"></div>
+    
+    <div class="container">
+        <div class="close-btn" onclick="window.close()" title="Đóng">✕</div>
+        
+        <div class="logo-container">
+            <img src="icon.png" alt="Logo">
+        </div>
+        
+        <h2 style="-webkit-app-region: drag;">Kích Hoạt Ứng Dụng</h2>
+        <p>Tài khoản Admin yêu cầu <strong>App Key</strong> để xác thực bảo mật phần mềm Desktop.</p>
+
+        <div id="errorMsg" class="error">Vui lòng nhập App Key hợp lệ!</div>
+
+        <input type="text" id="appKeyInput" placeholder="Nhập App Key (APP-KEY-xxxx-xxxx)" autocomplete="off" spellcheck="false">
+        
+        <button id="activateBtn">XÁC NHẬN VÀ KHỞI ĐỘNG</button>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const os = require('os');
+        const machineName = os.hostname();
+
+        const activateBtn = document.getElementById('activateBtn');
+        const input = document.getElementById('appKeyInput');
+        const errorMsg = document.getElementById('errorMsg');
+
+        activateBtn.addEventListener('click', async () => {
+            const val = input.value.trim();
+            if (!val.startsWith('APP-KEY-') || val.length < 15) {
+                errorMsg.innerText = "Vui lòng nhập App Key hợp lệ!";
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            activateBtn.innerText = "ĐANG KÍCH HOẠT...";
+            activateBtn.disabled = true;
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('https://c3binhson.edu.vn/thidua/src/api/kich_hoat_app_key.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ app_key: val, machine_name: machineName })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    ipcRenderer.send('save-app-key', val);
+                    window.close();
+                } else {
+                    errorMsg.innerText = data.message || "App Key không hợp lệ!";
+                    errorMsg.style.display = 'block';
+                    activateBtn.innerText = "XÁC NHẬN VÀ KHỞI ĐỘNG";
+                    activateBtn.disabled = false;
+                }
+            } catch (err) {
+                errorMsg.innerText = "Lỗi kết nối đến máy chủ!";
+                errorMsg.style.display = 'block';
+                activateBtn.innerText = "XÁC NHẬN VÀ KHỞI ĐỘNG";
+                activateBtn.disabled = false;
+            }
+        });
+
+        // Hỗ trợ Enter
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                activateBtn.click();
+            }
+        });
+    </script>
+</body>
+
+</html>

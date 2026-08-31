@@ -1,0 +1,18 @@
+{
+  "app": {
+    "id": "3384162828772052652",
+    "title": "Trường THPT Bình Sơn",
+    "theme": "light",
+    "headerColor": "#ffffff",
+    "textColor": "black",
+    "statusBar": "normal"
+  },
+  "listCSS": [
+    "assets/index-lMjPLHNS.css"
+  ],
+  "listSyncJS": [
+    "assets/index.Cxg6tC8w.module.js"
+  ],
+  "listAsyncJS": [],
+  "pages": []
+}

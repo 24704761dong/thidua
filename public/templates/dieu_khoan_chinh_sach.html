@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Điều khoản sử dụng và Chính sách bảo mật - Hệ thống Quản Lý Thi Đua Trường THPT Bình Sơn">
+    <title>Điều Khoản & Chính Sách Bảo Mật — QLTD THPT Bình Sơn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #224397;
+            --primary-light: #3b5ec9;
+            --primary-bg: #EBF0FA;
+            --accent: #0ea5e9;
+            --accent-bg: #E4F6FD;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --sidebar-width: 300px;
+            --header-height: 64px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: calc(var(--header-height) + 20px);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            color: var(--text);
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary-bg);
+        }
+
+        .menu-toggle svg {
+            display: block;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .logo-text {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-badge {
+            margin-left: auto;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-bg);
+            padding: 6px 14px;
+            border-radius: 99px;
+        }
+
+        .layout {
+            display: flex;
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px 0;
+            z-index: 900;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 899;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            padding: 12px 24px 6px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 24px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .sidebar-link.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 600;
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-link .link-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .sidebar-link.active .link-dot {
+            background: var(--primary);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 32px 48px 80px;
+            max-width: 900px;
+        }
+
+        .part-header {
+            margin: 48px 0 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .part-header:first-child {
+            margin-top: 0;
+        }
+
+        .part-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .part-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .part-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 36px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h3 .article-num {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        p {
+            margin-bottom: 12px;
+        }
+
+        .clause {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .clause-number {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .clause-list {
+            padding-left: 24px;
+            margin: 8px 0;
+        }
+
+        .clause-list li {
+            margin-bottom: 6px;
+            padding-left: 4px;
+        }
+
+        .clause-list li::marker {
+            color: var(--primary);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background: var(--primary-bg);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 13px;
+            border-bottom: 2px solid var(--primary);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #fafbfc;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin: 16px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .alert-info {
+            background: var(--accent-bg);
+            border-left: 4px solid var(--accent);
+            color: #0c4a6e;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border-left: 4px solid var(--warning);
+            color: #78350f;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            border-left: 4px solid var(--danger);
+            color: #7f1d1d;
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            border-left: 4px solid var(--success);
+            color: #064e3b;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .risk-high {
+            color: var(--danger);
+            font-weight: 700;
+        }
+
+        .risk-medium {
+            color: var(--warning);
+            font-weight: 700;
+        }
+
+        .badge-yes {
+            color: var(--success);
+        }
+
+        .badge-no {
+            color: var(--text-muted);
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            color: white;
+            margin: 24px 0;
+        }
+
+        .contact-card h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .contact-card .contact-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .contact-card .contact-label {
+            min-width: 120px;
+            font-weight: 600;
+            opacity: 1;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-x: auto;
+            margin: 12px 0;
+            white-space: pre;
+        }
+
+        .steps {
+            margin: 12px 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .doc-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .footer-note {
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .footer-copy {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .back-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            z-index: 800;
+        }
+
+        .back-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-top:hover {
+            background: var(--primary-light);
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px 16px 80px;
+            }
+
+            .part-title {
+                font-size: 22px;
+            }
+
+            h3 {
+                font-size: 16px;
+            }
+
+            .header-badge {
+                display: none;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th,
+            td {
+                padding: 8px 12px;
+            }
+
+            .contact-card {
+                padding: 20px;
+            }
+
+            .contact-card .contact-row {
+                flex-direction: column;
+                gap: 2px;
+            }
+        }
+
+        @media print {
+
+            .site-header,
+            .sidebar,
+            .sidebar-overlay,
+            .back-top,
+            .menu-toggle {
+                display: none !important;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .layout {
+                display: block;
+            }
+
+            body {
+                font-size: 12px;
+            }
+
+            .clause {
+                border: 1px solid #ccc;
+                box-shadow: none;
+            }
+
+            .part-header {
+                break-before: page;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+            <a href="#" class="header-logo">
+                <div class="logo-icon">TD</div>
+                <div>
+                    <div class="logo-text">THPT Bình Sơn</div>
+                    <div class="logo-sub">Hệ thống Quản Lý Thi Đua</div>
+                </div>
+            </a>
+            <span class="header-badge">Phiên bản 1.0 — 28/06/2026</span>
+        </div>
+    </header>
+    <div class="layout">
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Phần 1</div>
+                <a href="#phan1" class="sidebar-link active"><span class="link-dot"></span> Điều Khoản Sử Dụng</a>
+                <a href="#d1" class="sidebar-link"><span class="link-dot"></span> Giới thiệu</a>
+                <a href="#d3" class="sidebar-link"><span class="link-dot"></span> Đối tượng sử dụng</a>
+                <a href="#d4" class="sidebar-link"><span class="link-dot"></span> Quyền & nghĩa vụ người dùng</a>
+                <a href="#d6" class="sidebar-link"><span class="link-dot"></span> Quy định tài khoản</a>
+                <a href="#d8" class="sidebar-link"><span class="link-dot"></span> Hành vi bị cấm</a>
+                <a href="#d10" class="sidebar-link"><span class="link-dot"></span> Xử lý vi phạm</a>
+                <a href="#d11" class="sidebar-link"><span class="link-dot"></span> Miễn trừ trách nhiệm</a>
+                <a href="#d17" class="sidebar-link"><span class="link-dot"></span> Thông tin liên hệ</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Phần 2</div>
+                <a href="#phan2" class="sidebar-link"><span class="link-dot"></span> Chính Sách Bảo Mật</a>
+                <a href="#p2d2" class="sidebar-link"><span class="link-dot"></span> Thông tin thu thập</a>
+                <a href="#p2d3" class="sidebar-link"><span class="link-dot"></span> Mục đích sử dụng</a>
+                <a href="#p2d6" class="sidebar-link"><span class="link-dot"></span> Biện pháp bảo mật</a>
+                <a href="#p2d7" class="sidebar-link"><span class="link-dot"></span> Chia sẻ bên thứ ba</a>
+                <a href="#p2d9" class="sidebar-link"><span class="link-dot"></span> Quyền người dùng</a>
+                <a href="#p2d12" class="sidebar-link"><span class="link-dot"></span> Quyền riêng tư trẻ em</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Phần 3 — 5</div>
+                <a href="#phan3" class="sidebar-link"><span class="link-dot"></span> Chính Sách Nội Dung</a>
+                <a href="#phan4" class="sidebar-link"><span class="link-dot"></span> Bảo Mật Dữ Liệu</a>
+                <a href="#phan5" class="sidebar-link"><span class="link-dot"></span> Zalo Mini App</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Phụ lục</div>
+                <a href="#phan6" class="sidebar-link"><span class="link-dot"></span> Rủi Ro & Khuyến Nghị</a>
+            </div>
+        </nav>
+        <main class="main-content">
+            <div class="part-header" id="phan1">
+                <div class="part-label">Phần 1</div>
+                <h1 class="part-title">Điều Khoản Sử Dụng</h1>
+                <div class="part-subtitle">Terms of Use</div>
+            </div>
+            <h3 id="d1"><span class="article-num">Điều 1.</span> Giới thiệu</h3>
+            <div class="clause">
+                <p><span class="clause-number">1.1.</span> Hệ thống Quản Lý Thi Đua (sau đây gọi tắt là <strong>"Hệ
+                        thống"</strong>) là nền tảng quản lý nội bộ trực tuyến được phát triển và vận hành bởi Trường
+                    THPT Bình Sơn (sau đây gọi tắt là <strong>"Nhà trường"</strong>).</p>
+                <p><span class="clause-number">1.2.</span> Hệ thống bao gồm: Ứng dụng web quản trị, Zalo Mini App, và
+                    PWA dành cho quản trị viên.</p>
+                <p><span class="clause-number">1.3.</span> Mục đích chính: số hóa và tự động hóa quy trình đánh giá thi
+                    đua, vi phạm nội quy, quản lý hồ sơ học sinh — giáo viên, kỳ thi, điểm thi tại Trường THPT Bình Sơn.
+                </p>
+            </div>
+            <div class="alert alert-info">
+                <div class="alert-title">📌 Lưu ý</div>Bằng việc sử dụng Hệ thống, Người dùng đồng ý tuân thủ toàn bộ
+                các điều khoản trong tài liệu này.
+            </div>
+            <h3 id="d3"><span class="article-num">Điều 3.</span> Đối tượng sử dụng</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nhóm</th>
+                            <th>Vai trò</th>
+                            <th>Truy cập</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Admin</strong></td>
+                            <td>Toàn quyền quản lý</td>
+                            <td>Web, PWA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>User</strong></td>
+                            <td>Giám thị, GV trực</td>
+                            <td>Web Admin</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CTV</strong></td>
+                            <td>HS nhập vi phạm, Nhật kỳ</td>
+                            <td>Web CTV</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Học sinh</strong></td>
+                            <td>Tra cứu cá nhân</td>
+                            <td>Zalo Mini App</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GVCN</strong></td>
+                            <td>Nhận thông báo</td>
+                            <td>Email, Zalo ZNS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Khách</strong></td>
+                            <td>Tra cứu công khai</td>
+                            <td>Web</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3 id="d4"><span class="article-num">Điều 4.</span> Quyền và nghĩa vụ của Người dùng</h3>
+            <div class="clause">
+                <p><strong>Quyền:</strong> Sử dụng chức năng theo vai trò; tra cứu thông tin cá nhân; đổi mật khẩu; liên
+                    kết Google/Zalo; yêu cầu chỉnh sửa/xóa dữ liệu; nộp phúc khảo; nhận thông báo.</p>
+                <p><strong>Nghĩa vụ:</strong> Bảo mật tài khoản; không chia sẻ tài khoản; cung cấp thông tin chính xác;
+                    sử dụng đúng mục đích; thông báo khi bị truy cập trái phép; tuân thủ nội quy và pháp luật.</p>
+            </div>
+            <h3 id="d6"><span class="article-num">Điều 6.</span> Quy định về tài khoản</h3>
+            <div class="clause">
+                <p>Mỗi cá nhân 01 tài khoản duy nhất, do Nhà trường cấp. Hỗ trợ liên kết Google/Zalo, 2FA qua Google
+                    Authenticator. Tự động đăng xuất sau 30 phút không hoạt động.</p>
+            </div>
+            <h3 id="d8"><span class="article-num">Điều 8.</span> Hành vi bị cấm</h3>
+            <div class="clause">
+                <p><strong>Tài khoản:</strong> Chia sẻ, cho mượn, dùng bot/script. <strong>Dữ liệu:</strong> Nhập sai,
+                    thu thập trái phép, khai thác lỗ hổng, tải mã độc. <strong>Nội dung:</strong> Xúc phạm, bạo lực,
+                    phân biệt, quảng cáo. <strong>Kỹ thuật:</strong> Tấn công DDoS/SQLi/XSS, dịch ngược mã nguồn.</p>
+            </div>
+            <h3 id="d10"><span class="article-num">Điều 10.</span> Xử lý vi phạm</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mức độ</th>
+                            <th>Biện pháp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Nhẹ</strong></td>
+                            <td>Cảnh cáo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trung bình</strong></td>
+                            <td>Tạm khóa TK, thu hồi quyền</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nghiêm trọng</strong></td>
+                            <td>Khóa vĩnh viễn, kỷ luật</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Đặc biệt</strong></td>
+                            <td>Chuyển cơ quan chức năng</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3 id="d11"><span class="article-num">Điều 11.</span> Miễn trừ trách nhiệm</h3>
+            <div class="clause">
+                <p>Nhà trường không chịu trách nhiệm: thông tin sai do người dùng; TK bị truy cập trái phép do lỗi người
+                    dùng; gián đoạn bất khả kháng; lỗi dịch vụ bên thứ ba.</p>
+            </div>
+            <div class="alert alert-warning">
+                <div class="alert-title">⚠️ Quan trọng</div>Dữ liệu trên Hệ thống mang tính tham khảo. Kết quả chính
+                thức phải được Hội đồng Nhà trường phê duyệt.
+            </div>
+            <h3 id="d17"><span class="article-num">Điều 17.</span> Thông tin liên hệ</h3>
+            <div class="contact-card">
+                <h4>📧 Liên hệ Nhà trường</h4>
+                <div class="contact-row"><span class="contact-label">Đơn vị:</span> Trường THPT Bình Sơn</div>
+                <div class="contact-row"><span class="contact-label">Địa chỉ:</span> Huyện Bình Sơn, Tỉnh Quảng Ngãi
+                </div>
+                <div class="contact-row"><span class="contact-label">Email:</span> cloud@c3binhson.edu.vn</div>
+                <div class="contact-row"><span class="contact-label">Website:</span> https://c3binhson.edu.vn</div>
+            </div>
+
+            <div class="part-header" id="phan2">
+                <div class="part-label">Phần 2</div>
+                <h2 class="part-title">Chính Sách Bảo Mật</h2>
+                <div class="part-subtitle">Privacy Policy</div>
+            </div>
+            <div class="clause">
+                <p>Nhà trường cam kết tuân thủ Luật An ninh mạng 2018, Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá
+                    nhân.</p>
+            </div>
+            <h3 id="p2d2"><span class="article-num">Điều 2.</span> Thông tin thu thập</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nhóm</th>
+                            <th>Chi tiết</th>
+                            <th>Đối tượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Định danh</td>
+                            <td>Họ tên, ngày sinh, giới tính, mã HS</td>
+                            <td>Học sinh</td>
+                        </tr>
+                        <tr>
+                            <td>Giấy tờ</td>
+                            <td>Số CCCD</td>
+                            <td>Học sinh</td>
+                        </tr>
+                        <tr>
+                            <td>Liên lạc</td>
+                            <td>Email, SĐT, địa chỉ</td>
+                            <td>HS, GV</td>
+                        </tr>
+                        <tr>
+                            <td>Hình ảnh</td>
+                            <td>Ảnh thẻ chân dung</td>
+                            <td>Học sinh</td>
+                        </tr>
+                        <tr>
+                            <td>Tự động</td>
+                            <td>IP, vị trí IP, GPS, User Agent, thời gian</td>
+                            <td>Tất cả</td>
+                        </tr>
+                        <tr>
+                            <td>Bên thứ ba</td>
+                            <td>Google ID/Email, Zalo ID/SĐT</td>
+                            <td>Khi liên kết</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-success">
+                <div class="alert-title">✅ KHÔNG thu thập</div>Sinh trắc học, tin nhắn/cuộc gọi, dữ liệu ứng dụng khác,
+                lịch sử duyệt web.
+            </div>
+            <h3 id="p2d3"><span class="article-num">Điều 3.</span> Mục đích sử dụng dữ liệu</h3>
+            <div class="clause">
+                <ul class="clause-list">
+                    <li><strong>Quản lý giáo dục:</strong> Hồ sơ, vi phạm, điểm thi, phúc khảo</li>
+                    <li><strong>Bảo mật:</strong> Đăng nhập, 2FA, phát hiện bất thường</li>
+                    <li><strong>Liên lạc:</strong> Thông báo vi phạm, email sinh nhật, OTP</li>
+                    <li><strong>Thẻ HS:</strong> Tạo thẻ kèm QR Code</li>
+                    <li><strong>Báo cáo:</strong> Thống kê thi đua nội bộ</li>
+                    <li><strong>Sao lưu:</strong> Lưu trữ đám mây</li>
+                </ul>
+            </div>
+            <div class="alert alert-danger">
+                <div class="alert-title">🚫 KHÔNG dùng cho</div>Thương mại, quảng cáo, bán dữ liệu, phân tích tiêu dùng.
+            </div>
+            <h3 id="p2d6"><span class="article-num">Điều 6.</span> Biện pháp bảo mật</h3>
+            <div class="clause">
+                <p><strong>Ứng dụng:</strong> Mã hóa bcrypt, 2FA, quản lý phiên, đăng xuất từ xa, OTP, PDO Prepared
+                    Statements, Cookie httpOnly, reCAPTCHA.</p>
+                <p><strong>Hạ tầng:</strong> API key riêng biệt, Presigned URL (10 phút), Nhật ký đăng nhập đầy đủ.</p>
+            </div>
+            <h3 id="p2d7"><span class="article-num">Điều 7.</span> Chia sẻ bên thứ ba</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bên thứ ba</th>
+                            <th>Dữ liệu</th>
+                            <th>Mục đích</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Google OAuth</td>
+                            <td>Token xác thực</td>
+                            <td>Đăng nhập</td>
+                        </tr>
+                        <tr>
+                            <td>Zalo SDK/OA</td>
+                            <td>Token, Zalo ID</td>
+                            <td>Đăng nhập, ZNS</td>
+                        </tr>
+                        <tr>
+                            <td>Cloudflare R2</td>
+                            <td>Hình ảnh</td>
+                            <td>Lưu trữ đám mây</td>
+                        </tr>
+                        <tr>
+                            <td>Microsoft Graph</td>
+                            <td>File sao lưu</td>
+                            <td>OneDrive backup</td>
+                        </tr>
+                        <tr>
+                            <td>ip-api.com</td>
+                            <td>Địa chỉ IP</td>
+                            <td>Tra cứu vị trí</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3 id="p2d9"><span class="article-num">Điều 9.</span> Quyền người dùng với dữ liệu</h3>
+            <div class="clause">
+                <ul class="clause-list">
+                    <li><strong>Truy cập:</strong> Xem thông tin đang lưu trữ</li>
+                    <li><strong>Chỉnh sửa:</strong> Yêu cầu sửa thông tin sai</li>
+                    <li><strong>Xóa:</strong> Yêu cầu xóa (trừ dữ liệu quản lý bắt buộc)</li>
+                    <li><strong>Hủy liên kết:</strong> Hủy Google/Zalo bất kỳ lúc nào</li>
+                    <li><strong>Rút đồng ý:</strong> Dừng xử lý dữ liệu</li>
+                </ul>
+            </div>
+            <h3 id="p2d12"><span class="article-num">Điều 12.</span> Quyền riêng tư trẻ em</h3>
+            <div class="alert alert-info">
+                <div class="alert-title">👦 Học sinh dưới 16 tuổi</div>Thu thập dữ liệu trên cơ sở đồng ý cha/mẹ khi
+                nhập học và nghĩa vụ quản lý giáo dục theo Luật Giáo dục. Phụ huynh có quyền xem, sửa, xóa dữ liệu con
+                em.
+            </div>
+
+            <div class="part-header" id="phan3">
+                <div class="part-label">Phần 3</div>
+                <h2 class="part-title">Chính Sách Nội Dung</h2>
+            </div>
+            <div class="clause">
+                <p><strong>Được phép:</strong> Biên bản vi phạm trung thực, minh chứng rõ ràng, Nhật kỳ đúng thực tế,
+                    đơn phúc khảo lịch sự.</p>
+                <p><strong>Bị cấm:</strong> Bịa đặt, xúc phạm, bạo lực, nhạy cảm, phân biệt, vi phạm pháp luật, mã độc,
+                    quảng cáo.</p>
+            </div>
+            <h3>Quy trình xử lý vi phạm nội dung</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Tiếp nhận</div>Báo cáo qua email hoặc Admin
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Xem xét</div>Đánh giá trong 24 giờ
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Xử lý</div>Ẩn hoặc xóa nội dung
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Thông báo</div>Thông báo lý do cho người tạo
+                    </div>
+                </div>
+            </div>
+
+            <div class="part-header" id="phan4">
+                <div class="part-label">Phần 4</div>
+                <h2 class="part-title">Bảo Mật Dữ Liệu</h2>
+            </div>
+            <h3>Mã hóa dữ liệu</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loại</th>
+                            <th>Phương thức</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mật khẩu</td>
+                            <td>bcrypt</td>
+                            <td>Một chiều</td>
+                        </tr>
+                        <tr>
+                            <td>Token</td>
+                            <td>SHA-256</td>
+                            <td>64 ký tự ngẫu nhiên</td>
+                        </tr>
+                        <tr>
+                            <td>JWT</td>
+                            <td>HMAC-SHA256</td>
+                            <td>Xác thực API</td>
+                        </tr>
+                        <tr>
+                            <td>URL minh chứng</td>
+                            <td>Presigned URL</td>
+                            <td>Hết hạn 10 phút</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3>Phân quyền</h3>
+            <div class="code-block">Admin (Toàn quyền)
+                └── User (25+ quyền riêng biệt)
+                └── CTV / Học sinh (Quyền JSON)
+                └── Khách (Chỉ tra cứu)</div>
+            <h3>Nhật ký truy cập</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loại</th>
+                            <th>Nội dung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Đăng nhập Admin</td>
+                            <td>Thời gian, IP, vị trí, thiết bị</td>
+                        </tr>
+                        <tr>
+                            <td>Đăng nhập HS</td>
+                            <td>Thời gian, IP, GPS, thiết bị</td>
+                        </tr>
+                        <tr>
+                            <td>Phiên truy cập</td>
+                            <td>Session ID, IP, hoạt động cuối</td>
+                        </tr>
+                        <tr>
+                            <td>Hệ thống</td>
+                            <td>Lỗi, cảnh báo, hoạt động</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>Email đã gửi, trạng thái</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="part-header" id="phan5">
+                <div class="part-label">Phần 5</div>
+                <h2 class="part-title">Zalo Mini App</h2>
+            </div>
+            <h3>Quyền yêu cầu</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Quyền</th>
+                            <th>Mục đích</th>
+                            <th>Bắt buộc?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Internet</td>
+                            <td>Kết nối API</td>
+                            <td class="badge-yes">✅ Bắt buộc</td>
+                        </tr>
+                        <tr>
+                            <td>SĐT Zalo</td>
+                            <td>Xác minh TK</td>
+                            <td class="badge-yes">✅ Lần đầu</td>
+                        </tr>
+                        <tr>
+                            <td>Thông tin cơ bản</td>
+                            <td>Zalo ID, tên, ảnh</td>
+                            <td class="badge-yes">✅ Bắt buộc</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3>Quyền KHÔNG yêu cầu</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Quyền</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Camera</td>
+                            <td class="badge-no">❌ Không</td>
+                        </tr>
+                        <tr>
+                            <td>Micro</td>
+                            <td class="badge-no">❌ Không</td>
+                        </tr>
+                        <tr>
+                            <td>Bộ nhớ</td>
+                            <td class="badge-no">❌ Không</td>
+                        </tr>
+                        <tr>
+                            <td>GPS</td>
+                            <td class="badge-no">❌ Không</td>
+                        </tr>
+                        <tr>
+                            <td>Danh bạ</td>
+                            <td class="badge-no">❌ Không</td>
+                        </tr>
+                        <tr>
+                            <td>Push</td>
+                            <td class="badge-no">❌ Không</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info">
+                <div class="alert-title">🔐 Sinh trắc học</div>Face ID / Touch ID hoạt động cục bộ trên thiết bị.
+                <strong>KHÔNG</strong> thu thập/lưu trữ sinh trắc học lên máy chủ.
+            </div>
+
+            <div class="part-header" id="phan6">
+                <div class="part-label">Phụ lục</div>
+                <h2 class="part-title">Rủi Ro & Khuyến Nghị</h2>
+            </div>
+            <h3>Rủi ro bảo mật</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Vấn đề</th>
+                            <th>Mức độ</th>
+                            <th>Đề xuất</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Thiếu CSRF</td>
+                            <td class="risk-high">🔴 Cao</td>
+                            <td>Triển khai CSRF token</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Thiếu Rate Limiting</td>
+                            <td class="risk-high">🔴 Cao</td>
+                            <td>Giới hạn 5 lần/15 phút</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>reCAPTCHA tắt</td>
+                            <td class="risk-medium">🟡 TB</td>
+                            <td>Bật lại cho đăng nhập</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Thiếu CSP</td>
+                            <td class="risk-medium">🟡 TB</td>
+                            <td>Thêm header CSP</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Key cố định</td>
+                            <td class="risk-medium">🟡 TB</td>
+                            <td>Chuyển vào .env</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3>Vấn đề pháp lý cần bổ sung</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Vấn đề</th>
+                            <th>Đề xuất</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Đồng ý phụ huynh HS &lt; 16 tuổi</td>
+                            <td>Bổ sung form đồng ý khi nhập học</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Chính sách thu thập GPS</td>
+                            <td>Hiển thị thông báo xin phép</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Xóa dữ liệu sau tốt nghiệp</td>
+                            <td>Ẩn danh hóa tự động</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>DPA với bên thứ ba</td>
+                            <td>Ký hợp đồng Cloudflare, Microsoft</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Data Breach Notification</td>
+                            <td>Quy trình thông báo 72 giờ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="doc-footer">
+                <div class="footer-note">Tài liệu soạn dựa trên phân tích mã nguồn thực tế — 28/06/2026</div>
+                <div class="footer-copy">© 2026 Trường THPT Bình Sơn. Mọi quyền được bảo lưu.</div>
+            </div>
+        </main>
+    </div>
+    <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        aria-label="Lên đầu trang">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="18 15 12 9 6 15" />
+        </svg>
+    </button>
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('open') }
+        document.querySelectorAll('.sidebar-link').forEach(l => l.addEventListener('click', () => { if (window.innerWidth <= 768) toggleSidebar() }));
+        const sections = document.querySelectorAll('[id]'), sLinks = document.querySelectorAll('.sidebar-link');
+        window.addEventListener('scroll', () => {
+            let cur = ''; const sy = window.scrollY + 100;
+            sections.forEach(s => { if (s.offsetTop <= sy) cur = s.id });
+            sLinks.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#' + cur) });
+            document.getElementById('backTop').classList.toggle('visible', window.scrollY > 400);
+        }, { passive: true });
+    </script>
+</body>
+
+</html>

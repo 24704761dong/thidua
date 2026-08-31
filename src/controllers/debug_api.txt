@@ -1,0 +1,87 @@
+[2026-07-01 21:40:28] BẮT ĐẦU API, POST: Array
+(
+    [id] => 1
+    [status] => 1
+)
+
+Bắt đầu cập nhật DB...
+Cập nhật xin_vang_hoc xong.
+Bắt đầu insert thong_bao_hoc_sinh...
+Insert thong_bao_hoc_sinh xong.
+Bắt đầu queue_email...
+queue_email xong.
+Thành công.
+[2026-07-01 21:56:09] BẮT ĐẦU API, POST: Array
+(
+    [id] => 4
+    [status] => 1
+)
+
+Bắt đầu cập nhật DB...
+Cập nhật xin_vang_hoc xong.
+Bắt đầu insert thong_bao_hoc_sinh...
+Insert thong_bao_hoc_sinh xong.
+Bắt đầu queue_email...
+queue_email xong.
+Thành công.
+[2026-07-01 21:56:14] BẮT ĐẦU API, POST: Array
+(
+    [id] => 3
+    [status] => 2
+)
+
+Bắt đầu cập nhật DB...
+Cập nhật xin_vang_hoc xong.
+Bắt đầu insert thong_bao_hoc_sinh...
+Insert thong_bao_hoc_sinh xong.
+Bắt đầu queue_email...
+queue_email xong.
+Thành công.
+[2026-07-01 21:56:26] BẮT ĐẦU API, POST: Array
+(
+    [id] => 2
+    [status] => 1
+)
+
+Bắt đầu cập nhật DB...
+Cập nhật xin_vang_hoc xong.
+Bắt đầu insert thong_bao_hoc_sinh...
+Insert thong_bao_hoc_sinh xong.
+Bắt đầu queue_email...
+queue_email xong.
+Thành công.
+[2026-07-01 22:03:20] BẮT ĐẦU API, POST: Array
+(
+    [id] => 5
+    [status] => 1
+)
+
+Bắt đầu cập nhật DB...
+Cập nhật xin_vang_hoc xong.
+Bắt đầu insert thong_bao_hoc_sinh...
+Insert thong_bao_hoc_sinh xong.
+Bắt đầu queue_email...
+queue_email xong.
+Thành công.
+[2026-08-30 14:04:40] BẮT ĐẦU API, POST: Array
+(
+    [id] => 1
+    [status] => 2
+)
+
+Bắt đầu cập nhật DB...
+Cập nhật xin_vang_hoc xong.
+Bắt đầu insert thong_bao_hoc_sinh...
+Insert thong_bao_hoc_sinh xong.
+Thành công.
+[2026-08-30 14:04:51] BẮT ĐẦU API, POST: Array
+(
+    [id] => 1
+    [status] => 1
+)
+
+Bắt đầu cập nhật DB...
+Cập nhật xin_vang_hoc xong.
+Bắt đầu insert thong_bao_hoc_sinh...
+Insert thong_bao_hoc_sinh xong.
+Thành công.

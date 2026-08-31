@@ -1,0 +1,60 @@
+name: Build Desktop App (Windows & macOS)
+
+on:
+  workflow_dispatch: # Cho phép bấm nút chạy thủ công trên GitHub bất cứ lúc nào
+  push:
+    paths:
+      - 'desktop-app/**'
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'desktop-app/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: desktop-app
+        run: npm ci
+
+      - name: Build for Windows
+        if: runner.os == 'Windows'
+        working-directory: desktop-app
+        run: npm run build:win
+
+      - name: Build for macOS (.dmg & .zip)
+        if: runner.os == 'macOS'
+        working-directory: desktop-app
+        run: npm run build:mac
+
+      - name: Upload Windows Artifacts
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ThiDua-Desktop-Windows
+          path: |
+            desktop-app/release/*.exe
+
+      - name: Upload macOS Artifacts (.dmg & .zip)
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ThiDua-Desktop-macOS
+          path: |
+            desktop-app/release/*.dmg
+            desktop-app/release/*.zip

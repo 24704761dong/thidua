@@ -1,0 +1,237 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+:root {
+  --zaui-light-bottom-navigation-divider-color: transparent;
+}
+
+
+@import "tailwindcss";
+
+/* ========== Native App Feel ========== */
+body, * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* Prevent FOUT (Flash of unstyled text) for icons */
+.zi {
+  animation: hide-fout 0.4s forwards;
+}
+
+@keyframes hide-fout {
+  0% { color: transparent !important; }
+  99% { color: transparent !important; }
+  100% { color: inherit; }
+}
+
+/* ========== Design Tokens ========== */
+@theme {
+  /* Brand */
+  --color-brand: #224397;
+  --color-accent: #FAB723;
+
+  /* Text tokens */
+  --color-primary: #141415;
+  --color-secondary: #333333;
+  --color-dark: #0d0d0d;
+  --color-deep: #101d20;
+  --color-muted: #999999;
+  --color-icon: #a9adb2;
+  --color-meta: #6f7071;
+  --color-neutral: #676767;
+  --color-slate: #767a7f;
+
+  /* Surface / background tokens */
+  --color-surface: #f7f7f8;
+  --color-surface-card: #f2f5f9;
+  --color-icon-bg: #f0f7ff;
+  --color-divider: #e9ebed;
+
+  /* Typography scale */
+  --text-caption: 0.6875rem;     /* 11px */
+  --text-body-sm: 0.75rem;       /* 12px */
+  --text-title-sm: 0.8125rem;    /* 13px */
+  --text-body-md: 0.875rem;      /* 14px */
+  --text-body-lg: 0.9375rem;     /* 15px */
+  --text-title-md: 1rem;         /* 16px */
+  --text-title-lg: 1.125rem;     /* 18px */
+}
+
+/* ========== Page Transition Animations ========== */
+/* Must stay in CSS — requires complex combinator selectors */
+
+.page-transition-group {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  overflow: hidden;
+  background-color: #f0f6fc !important;
+}
+
+.zaui-page, .zmp-page {
+  background-color: #f0f6fc !important;
+}
+
+.page-transition-group > div {
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  background-color: #f0f6fc;
+}
+
+.page-enter,
+.page-exit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  overflow-y: auto;
+  background-color: #f0f6fc;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Forward: new page slides in from right */
+.slide-forward .page-enter        { transform: translate3d(100%, 0, 0); will-change: transform; }
+.slide-forward .page-enter-active { transform: translate3d(0, 0, 0); transition: transform 260ms cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.slide-forward .page-exit         { transform: translate3d(0, 0, 0); will-change: transform; }
+.slide-forward .page-exit-active  { transform: translate3d(-30%, 0, 0); opacity: 0.8; transition: transform 260ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 260ms ease; }
+
+/* Backward: new page slides in from left */
+.slide-backward .page-enter        { transform: translate3d(-30%, 0, 0); opacity: 0.8; will-change: transform; }
+.slide-backward .page-enter-active { transform: translate3d(0, 0, 0); opacity: 1; transition: transform 260ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 260ms ease; }
+.slide-backward .page-exit         { transform: translate3d(0, 0, 0); will-change: transform; }
+.slide-backward .page-exit-active  { transform: translate3d(100%, 0, 0); transition: transform 260ms cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+
+/* Fade Through (Material Design) for tabs */
+.fade-through .page-enter {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.fade-through .page-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 210ms linear 90ms, transform 210ms cubic-bezier(0, 0, 0.2, 1) 90ms;
+}
+.fade-through .page-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+.fade-through .page-exit-active {
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 90ms linear;
+}
+
+/* ========== ZaUI Component Overrides ========== */
+/* Third-party component class overrides — must stay in CSS */
+
+.zaui-header {
+  background-color: #ffffff !important;
+}
+.zaui-header .zaui-header-title {
+  color: #040104 !important;
+}
+
+.zaui-bottom-navigation {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(34, 67, 151, 0.06);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
+  height: 50px !important;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.zaui-bottom-navigation-item {
+  height: 100% !important;
+  padding: 0 !important;
+  padding-bottom: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Simple Active Effect */
+.zaui-bottom-navigation-item-active .zaui-bottom-navigation-item-icon {
+  color: #224397 !important;
+  transform: scale(1.1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.zaui-bottom-navigation-item-active .zaui-bottom-navigation-item-label {
+  color: #224397 !important;
+  font-weight: 700;
+  font-size: 10px !important;
+  transition: all 0.3s ease;
+}
+
+/* Inactive State */
+.zaui-bottom-navigation-item-icon {
+  color: #94a3b8 !important; /* slate-400 */
+  padding: 0px !important;
+  margin-bottom: 2px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  transition: all 0.2s ease;
+}
+
+.zaui-bottom-navigation-item-label {
+  color: #94a3b8 !important;
+  font-size: 10px !important;
+  font-weight: 500;
+  line-height: 1 !important;
+  margin-top: 0px !important;
+  text-align: center !important;
+  transition: all 0.2s ease;
+}
+
+.zaui-bottom-navigation-content {
+  padding-top: 8px !important;
+}
+
+.zaui-bottom-navigation::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-bottom, 0px);
+  background-color: transparent;
+}
+
+/* ========== Form Select — valid state ========== */
+/* CSS pseudo-class combinator, not expressible with Tailwind alone */
+.scholarship-select {
+  appearance: none;
+  -webkit-appearance: none;
+  color: #a9adb2;
+}
+.scholarship-select:valid {
+  color: #141415;
+}
+
+/* Custom Year Select styling */
+.custom-year-select .zaui-input,
+.custom-year-select input,
+.custom-year-select .zaui-select-value {
+    text-align: center !important;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.custom-year-select .zaui-select-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}

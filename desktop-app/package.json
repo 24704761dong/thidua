@@ -1,0 +1,74 @@
+{
+  "name": "thidua_desktop",
+  "version": "1.0.0",
+  "description": "Hệ thống Quản lý Thi đua Desktop",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build:win": "electron-builder --win portable nsis",
+    "build:portable": "electron-builder --win portable",
+    "build:mac": "electron-builder --mac",
+    "build:all": "electron-builder -mw"
+  },
+  "build": {
+    "appId": "com.eduprogress.thidua",
+    "productName": "ThiDua System",
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "icon": "icon.png",
+      "target": [
+        "portable",
+        "nsis"
+      ]
+    },
+    "mac": {
+      "icon": "icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "title": "ThiDua System Installer",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  },
+  "keywords": [],
+  "author": "Eduprogress",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3"
+  }
+}

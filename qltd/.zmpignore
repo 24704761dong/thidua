@@ -1,0 +1,21 @@
+# Node dependencies
+node_modules/
+
+# Native Android / Capacitor builds
+android/
+capacitor.config.ts
+
+# Environment and sensitive data
+.env
+.env.*
+
+# Logs and IDE configs
+*.log
+.idea/
+.vscode/
+.claude/
+.DS_Store
+
+# Temporary / Scratch
+scratch/
+docs/

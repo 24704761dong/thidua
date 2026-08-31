@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    LimitRequestBody 104857600
+    RewriteEngine On
+    RewriteBase /thidua/public/
+
+    # Nếu file hoặc thư mục thật tồn tại thì không rewrite
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !\.apk$
+
+    # Gửi các request khác về index.php trong thư mục public
+    RewriteRule ^ index.php [L]
+</IfModule>

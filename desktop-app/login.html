@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản lý Thi đua</title>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            -webkit-app-region: drag;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2), 0 0 0 1px rgba(226, 232, 240, 0.8);
+            width: 380px;
+            text-align: center;
+            -webkit-app-region: no-drag;
+        }
+        .logo {
+            width: 80px; height: 80px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #1e3a8a;
+            margin-top: 0; margin-bottom: 30px;
+            font-size: 24px; font-weight: 700;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #224397;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #1e3a8a;
+        }
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .error-msg {
+            color: #ef4444;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: left;
+        }
+        .loader {
+            display: none;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            width: 16px; height: 16px;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <img src="icon.png" alt="Logo" class="logo">
+        <h2>Hệ thống Quản lý Thi đua</h2>
+        
+        <div id="errorMsg" class="error-msg"></div>
+
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Tên đăng nhập" required autocomplete="username" spellcheck="false">
+            <input type="password" id="password" placeholder="Mật khẩu" required autocomplete="current-password">
+            <button type="submit" id="submitBtn">
+                <div class="loader" id="loader"></div>
+                <span id="btnText">Đăng nhập</span>
+            </button>
+        </form>
+        <div style="margin-top: 20px; font-size: 13px;">
+            <a href="#" onclick="window.electronAPI.clearAppKey(); return false;" style="color: #64748b; text-decoration: none; transition: 0.2s;">Đổi App Key khác?</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btnText');
+
+            if (!user || !pass) return;
+
+            // Show loading
+            btn.disabled = true;
+            loader.style.display = 'inline-block';
+            btnText.innerText = 'Đang xử lý...';
+            errorMsg.style.display = 'none';
+
+            // Gửi dữ liệu qua IPC Main bằng ContextBridge an toàn
+            window.electronAPI.doLogin({ username: user, password: pass });
+        });
+
+        // Nhận kết quả từ main process
+        window.electronAPI.onLoginResponse((event, response) => {
+            const btn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btnText');
+
+            btn.disabled = false;
+            loader.style.display = 'none';
+            btnText.innerText = 'Đăng nhập';
+
+            if (response.success) {
+                btn.style.background = '#10b981'; // Green
+                btnText.innerText = 'Thành công! Đang chuyển...';
+                // Main process sẽ tự động redirect
+            } else {
+                errorMsg.innerText = response.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
