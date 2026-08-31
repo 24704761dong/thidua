@@ -22,13 +22,13 @@ const formatDate = (dateString: string) => {
 };
 
 export const NewsCard: React.FC<NewsCardProps> = ({ news, variant = 'list' }) => {
-  const defaultImage = 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1200&q=70';
+  const defaultImage = 'https://c3binhson.edu.vn/storage/images/defaults/news-default.png';
   const imgUrl = news.thumbnail_url || defaultImage;
 
   const handleClick = () => {
     // Open the news article in Zalo Mini App's built-in webview
     openWebview({
-      url: `https://c3binhson.edu.vn/tin-tuc/${news.id}`,
+      url: `https://c3binhson.edu.vn/pages/bai-viet/?id=${news.id}`,
       config: {
         style: "bottomSheet",
         leftButton: "back"

@@ -227,14 +227,14 @@ const HomePage: React.FC = () => {
             >
               {/* Avatar */}
               <div className="flex justify-center mb-4">
-                <div className="w-24 h-24 rounded-full border-[4px] border-[#224397]/25">
+                <div className="w-24 h-24 rounded-full border-[4px] border-[#224397]/25 overflow-hidden">
                   <img 
                     src={serverAvatarUrl} 
                     alt="Avatar" 
                     referrerPolicy="no-referrer"
                     className="w-full h-full rounded-full object-cover" 
                     onError={(e) => {
-                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=224397&color=ffffff`;
+                      e.currentTarget.src = 'https://c3binhson.edu.vn/thidua/public/assets/img/anhthegoc.JPG';
                     }}
                   />
                 </div>
