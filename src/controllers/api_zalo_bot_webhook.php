@@ -200,8 +200,37 @@ try {
         ]);
         exit;
 
+    // 3. Xử lý sự kiện rút lại sự đồng ý / xoá dữ liệu từ Zalo Mini App (Bắt buộc cho kiểm duyệt Zalo)
+    } elseif (in_array($event_name, ['user_revoke_consent', 'user_delete_data', 'user_remove_app', 'revoke_consent', 'delete_user_data'])) {
+        $zalo_user_id = $data['user_id_by_app'] ?? $data['zalo_id'] ?? $data['sender']['id'] ?? $data['user_id'] ?? '';
+        
+        if (!empty($zalo_user_id)) {
+            // Xóa liên kết zalo_id của học sinh
+            $stmt1 = $db->prepare("UPDATE ho_so_hoc_sinh SET zalo_id = NULL, zalo_chat_id = NULL WHERE zalo_id = ? OR zalo_chat_id = ?");
+            $stmt1->execute([$zalo_user_id, $zalo_user_id]);
+
+            // Xóa liên kết zalo_id của tài khoản giáo viên/admin
+            $stmt2 = $db->prepare("UPDATE users SET zalo_id = NULL WHERE zalo_id = ?");
+            $stmt2->execute([$zalo_user_id]);
+        }
+
+        echo json_encode([
+            'error' => 0,
+            'message' => 'Success',
+            'data' => [
+                'status' => 'deleted',
+                'user_id' => $zalo_user_id
+            ]
+        ]);
+        exit;
+
     } else {
-        echo json_encode(['success' => false, 'message' => 'Action không hợp lệ.']);
+        // Trả về success mặc định cho các ping/event khác của Zalo Verification
+        echo json_encode([
+            'error' => 0,
+            'message' => 'Success',
+            'ok' => true
+        ]);
         exit;
     }
 
